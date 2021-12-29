@@ -15,7 +15,7 @@ function App({rx_authenticated, authenticated}) {
   useEffect(() => {
     if (getCookie('myToken')) {
       rx_authenticated(true);
-      console.log('[appjs]토큰있으니까 로그인된거임')
+      console.log('[appjs]토큰있으니까 로그인된거임!')
     }
   }, [rx_authenticated]);
     
