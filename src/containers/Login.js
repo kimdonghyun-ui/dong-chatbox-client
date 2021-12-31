@@ -5,9 +5,10 @@ import { cm_login } from "../helpers/common";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 // import axios from "axios";
 // import { setCookie } from "../cookie";
+
 import { connect } from "react-redux";
 
-import { rx_authenticated } from "../modules/chats";
+import { rx_authenticated, rx_big_loading, rx_me } from "../modules/chats";
 import {
   Avatar,
   Button,
@@ -52,7 +53,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function Login({rx_authenticated}) {
+function Login({ rx_authenticated, rx_big_loading, rx_me }) {
   const classes = useStyles();
   const [member, setMember] = useState({
     email: "",
@@ -78,7 +79,7 @@ function Login({rx_authenticated}) {
   const handleOnSubmit = async (e) => {
     e.preventDefault();
     if (member.email !== "" && member.password !== "") {
-      cm_login(member,rx_authenticated);
+      cm_login(member,rx_authenticated,rx_big_loading,rx_me);
     }
   };
 
@@ -90,6 +91,7 @@ function Login({rx_authenticated}) {
     <Container component="main" maxWidth="xs">
       <CssBaseline />
       <div className={classes.paper}>
+
         <Avatar className={classes.avatar}>
           <LockOutlinedIcon />
         </Avatar>
@@ -165,6 +167,12 @@ const mapDispatchToProps = (dispatch) => ({
   rx_authenticated: (val) => {
     dispatch(rx_authenticated(val));
   },
+  rx_big_loading: (val) => {
+    dispatch(rx_big_loading(val));
+  },
+  rx_me: (val) => {
+    dispatch(rx_me(val));
+  }
 });
 
 export default connect(null, mapDispatchToProps)(Login);

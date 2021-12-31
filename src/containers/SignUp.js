@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { cm_signUp } from "../helpers/common";
 import { makeStyles } from "@material-ui/core/styles";
+import { connect } from "react-redux";
 
 import {
   Avatar,
@@ -15,6 +16,7 @@ import {
 } from "@material-ui/core";
 
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
+import { rx_authenticated, rx_big_loading, rx_me } from "../modules/chats";
 
 function Copyright() {
   return (
@@ -49,7 +51,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function SignUp() {
+function SignUp({ rx_authenticated, rx_big_loading, rx_me }) {
   const classes = useStyles();
   const [member, setMember] = useState({
     email: "",
@@ -65,7 +67,7 @@ function SignUp() {
   const handleOnSubmit = async (e) => {
     e.preventDefault();
     if (member.email !== "" && member.password !== "" && member.name !== "") {
-      cm_signUp(member);
+      cm_signUp(member,rx_authenticated,rx_big_loading,rx_me);
     }
   };
 
@@ -148,4 +150,17 @@ function SignUp() {
   );
 }
 
-export default SignUp
+
+const mapDispatchToProps = (dispatch) => ({
+  rx_authenticated: (val) => {
+    dispatch(rx_authenticated(val));
+  },
+  rx_big_loading: (val) => {
+    dispatch(rx_big_loading(val));
+  },
+  rx_me: (val) => {
+    dispatch(rx_me(val));
+  }
+});
+
+export default connect(null, mapDispatchToProps)(SignUp);

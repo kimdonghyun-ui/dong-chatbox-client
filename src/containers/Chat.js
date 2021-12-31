@@ -11,7 +11,7 @@ function Chat() {
 
 	useEffect(
 		() => {
-			socketRef.current = io.connect("https://dong-chatbox-server.herokuapp.com")
+			socketRef.current = io.connect("http://localhost:4001")
 			socketRef.current.on("message", ({ name, message }) => {
 				setChat([ ...chat, { name, message } ])
 			})

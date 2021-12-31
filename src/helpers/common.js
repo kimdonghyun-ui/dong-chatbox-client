@@ -2,6 +2,8 @@
 import { setCookie } from "../cookie";
 import axios from "axios";
 
+const api_url = "http://localhost:1337/";
+// const api_url = "https://dongdong-api.herokuapp.com/";
 
 
 //##########################################################
@@ -32,9 +34,10 @@ export function CM_login_state(rx_authenticated) {
 //##########################################################
 //########### 회원가입 ################
 //##########################################################
-export const cm_signUp = async (member) => {
+export const cm_signUp = async (member,rx_authenticated,rx_big_loading,rx_me) => {
+    rx_big_loading(true);
     try {
-      const { data } = await axios.post('https://dongdong-api.herokuapp.com/api/auth/local/register', {
+      const { data } = await axios.post(api_url+'api/auth/local/register', {
           username: member.name,
           email: member.email,
           password: member.password
@@ -47,19 +50,28 @@ export const cm_signUp = async (member) => {
           secure: true,
           sameSite: "none",
         });
+        setCookie('me', data.user,{
+          path: "/",
+          secure: true,
+          sameSite: "none",
+        });
+        rx_authenticated(true);
+        rx_me(data.user);
       }
     } catch (e) {
       console.log('회원가입 실패');
-    } 
+    }
+    rx_big_loading(false);
   }
 //##########################################################
 
 //##########################################################
 //########### 로그인 ################
 //##########################################################
-export const cm_login = async (member,rx_authenticated) => {
+export const cm_login = async (member,rx_authenticated,rx_big_loading,rx_me) => {
+    rx_big_loading(true);
     try {
-      const { data } = await axios.post('https://dongdong-api.herokuapp.com/api/auth/local', {
+      const { data } = await axios.post(api_url+'api/auth/local', {
         identifier: member.email,
         password: member.password,
       });
@@ -70,11 +82,39 @@ export const cm_login = async (member,rx_authenticated) => {
           secure: true,
           sameSite: "none",
         });
+        setCookie('me', data.user,{
+          path: "/",
+          secure: true,
+          sameSite: "none",
+        });
         rx_authenticated(true);
+        rx_me(data.user);
       }
     } catch (e) {
       console.log('실패');
-
-    } 
+    }
+    rx_big_loading(false);
   }
 //##########################################################
+
+
+//##########################################################
+//########### 유저리스트 ################
+//##########################################################
+export const cm_all_users = async (rx_all_users,socket) => {
+  // rx_big_loading(true);
+  try {
+    const { data } = await axios.get(api_url+'api/users');
+    // console.log(data);
+    rx_all_users(data);
+    socket.emit('all_users', data);
+  } catch (e) {
+    console.log('유저리스트 실패');
+  }
+  // rx_big_loading(false);
+}
+//##########################################################
+
+
+
+
