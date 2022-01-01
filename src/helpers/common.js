@@ -1,34 +1,13 @@
 
-import { setCookie } from "../cookie";
+import { setCookie, delCookie } from "../cookie";
 import axios from "axios";
+
+
+import io from "socket.io-client";
+const socket = io.connect("http://localhost:4001");
 
 const api_url = "http://localhost:1337/";
 // const api_url = "https://dongdong-api.herokuapp.com/";
-
-
-//##########################################################
-//########### 로그인 여부를 판단해주는 함수(firebase) ################
-//##########################################################
-export function CM_login_state(rx_authenticated) {
-//   fireauth.onAuthStateChanged((user) => {
-//     if (user) {
-//       //로그인상태---
-//       console.log("App/로그인", user);
-//       //#########################
-//       //connected(true);
-//       rx_authenticated(true); //현재 로그인 여부 파악을 위한 값
-//       //#########################
-//     } else {
-//       //로그아웃상태---
-//       console.log("App/로그아웃", user);
-//       //#########################
-//       //connected(false);
-//       rx_authenticated(false); //현재 로그인 여부 파악을 위한 값
-//       //#########################
-//     }
-//   });
-}
-//##########################################################
 
 
 //##########################################################
@@ -57,6 +36,7 @@ export const cm_signUp = async (member,rx_authenticated,rx_big_loading,rx_me) =>
         });
         rx_authenticated(true);
         rx_me(data.user);
+        cm_contact(data.user.id,true);
       }
     } catch (e) {
       console.log('회원가입 실패');
@@ -89,6 +69,7 @@ export const cm_login = async (member,rx_authenticated,rx_big_loading,rx_me) => 
         });
         rx_authenticated(true);
         rx_me(data.user);
+        cm_contact(data.user.id,true);
       }
     } catch (e) {
       console.log('실패');
@@ -101,12 +82,12 @@ export const cm_login = async (member,rx_authenticated,rx_big_loading,rx_me) => 
 //##########################################################
 //########### 유저리스트 ################
 //##########################################################
-export const cm_all_users = async (rx_all_users,socket) => {
+export const cm_all_users = async (socket) => {
   // rx_big_loading(true);
   try {
     const { data } = await axios.get(api_url+'api/users');
     // console.log(data);
-    rx_all_users(data);
+    // rx_all_users(data);
     socket.emit('all_users', data);
   } catch (e) {
     console.log('유저리스트 실패');
@@ -118,3 +99,37 @@ export const cm_all_users = async (rx_all_users,socket) => {
 
 
 
+
+
+
+//##########################################################
+//########### 로그아웃 ################
+//##########################################################
+export const cm_logout = (rx_authenticated,me,rx_all_users,all_users) => {
+  delCookie('me');
+  delCookie('myToken');
+  rx_authenticated(false);
+  cm_contact(me.id,false);
+}
+//##########################################################
+
+
+
+
+//##########################################################
+//########### 접속유무 확인 ################
+//##########################################################
+export const cm_contact = async (id,state) => {
+  // rx_big_loading(true);
+  try {
+    await axios.put(api_url+'api/users/'+id, {
+      confirmed: state,
+    });
+    // socket.emit('all_users', all_users);
+    cm_all_users(socket);
+  } catch (e) {
+    console.log('접속유무 확인 실패');
+  }
+  // rx_big_loading(false);
+}
+//##########################################################

@@ -1,4 +1,4 @@
-import React,{ useEffect, useState } from "react";
+import React,{ useEffect } from "react";
 import { connect } from "react-redux";
 import FriendList from "../components/FriendList";
 import io from "socket.io-client";
@@ -11,39 +11,30 @@ import {
 import TabBox from "../components/TabBox";
 
 function Chatbox({ rx_all_users, all_users, me }) {
-  const [ users, setUser ] = useState([])
+
 
   const socket = io.connect("http://localhost:4001");
 
   useEffect(() => {
-    cm_all_users(rx_all_users,socket);
+    cm_all_users(socket);
     socket.on('user_update', function(user) {
-      setUser(user);
+      rx_all_users(user);
     });
   // eslint-disable-next-line react-hooks/exhaustive-deps
   },[]);
 
 
-
   return (
-    // <div className="App">
-    //   <button onClick={()=> cm_all_users(rx_all_users,socket)}>버튼</button>
-    //   <FriendList users={users} />
-    // </div>
-
-
-<React.Fragment>
-<CssBaseline />
-<TabBox
-  content={[
-    <FriendList users={users} me={me} />,
-    <FriendList users={users} me={me} />,
-    <FriendList users={users} me={me} />,
-  ]}
-/>
-</React.Fragment>
-
-
+    <React.Fragment>
+      <CssBaseline />
+      <TabBox
+        content={[
+          <FriendList users={all_users} me={me} />,
+          <FriendList users={all_users} me={me} />,
+          <FriendList users={all_users} me={me} />,
+        ]}
+      />
+    </React.Fragment>
   );
 } 
 

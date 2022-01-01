@@ -3,14 +3,14 @@ import React, { useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import ListSubheader from "@material-ui/core/ListSubheader";
 import { connect } from "react-redux";
-import { rx_authenticated } from "../modules/chats";
+import { rx_authenticated, rx_all_users } from "../modules/chats";
 
 import FriendItem from "./FriendItem";
-import { delCookie } from "../cookie";
+// import { delCookie } from "../cookie";
 
 import { Box, List, Button } from "@material-ui/core";
 
-// import { CM_me_connected, CM_logout } from "../helpers/common";
+import { cm_logout } from "../helpers/common";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -49,7 +49,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const FriendList = ({users, me, rx_authenticated}) => {
+const FriendList = ({users, me, rx_authenticated, rx_all_users, all_users}) => {
   const classes = useStyles();
 
 
@@ -64,9 +64,7 @@ const FriendList = ({users, me, rx_authenticated}) => {
       <div  className={classes.title}>
         {me.username}
         <Button onClick={() => {
-            delCookie('me');
-            delCookie('myToken');
-            rx_authenticated(false);
+            cm_logout(rx_authenticated,me,rx_all_users,all_users);
           }}>로그아웃</Button>
       </div>
       <ListSubheader component="div">전체 친구 리스트</ListSubheader>
@@ -75,7 +73,7 @@ const FriendList = ({users, me, rx_authenticated}) => {
        
         {users.length > 0 ? (
           users.map((user, index) => (
-            <FriendItem img="https://material-ui.com/static/images/avatar/1.jpg" text={user.username} sub={user.email} />
+            <FriendItem key={index} img="https://material-ui.com/static/images/avatar/1.jpg" text={user.username} sub={user.email} confirmed={user.confirmed} />
           ))
         ) : (
           <li>리스트가없습니다.</li>
@@ -86,14 +84,17 @@ const FriendList = ({users, me, rx_authenticated}) => {
   );
 };
 
-// const mapStateToProps = (state) => ({
-//   all_users: state.chats.all_users,
-// });
+const mapStateToProps = (state) => ({
+  all_users: state.chats.all_users,
+});
 
 const mapDispatchToProps = (dispatch) => ({
   rx_authenticated: (val) => {
     dispatch(rx_authenticated(val));
   },
+  rx_all_users: (val) => {
+    dispatch(rx_all_users(val));
+  },
 });
 
-export default connect(null, mapDispatchToProps)(FriendList);
+export default connect(mapStateToProps, mapDispatchToProps)(FriendList);

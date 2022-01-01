@@ -46,6 +46,7 @@ const StyledBadge = withStyles((theme) => ({
 const FriendItem = ({
   text,
   sub,
+  confirmed,
   uid,
   avatar,
   msg_key,
@@ -66,7 +67,7 @@ const FriendItem = ({
         <ListItemAvatar>
           <Badge color="secondary" badgeContent={1}>
             <StyledBadge
-              invisible={!true}
+              invisible={!confirmed}
               overlap="circular"
               anchorOrigin={{
                 vertical: "bottom",
