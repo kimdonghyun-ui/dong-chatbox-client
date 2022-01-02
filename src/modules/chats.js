@@ -1,6 +1,7 @@
 const RX_AUTHENTICATED = "menu/RX_AUTHENTICATED";
 const RX_BIG_LOADING = "menu/RX_BIG_LOADING";
 const RX_ALL_USERS = "menu/RX_ALL_USERS";
+const RX_ALL_ROOMS = "menu/RX_ALL_ROOMS";
 const RX_ME = "menu/RX_ME";
 
 export const rx_authenticated = (result) => ({
@@ -18,6 +19,11 @@ export const rx_all_users = (result) => ({
   result,
 });
 
+export const rx_all_rooms = (result) => ({
+  type: RX_ALL_ROOMS,
+  result,
+});
+
 export const rx_me = (result) => ({
   type: RX_ME,
   result,
@@ -30,6 +36,7 @@ export const rx_me = (result) => ({
     authenticated: false,
     big_loading: false,
     all_users: [],
+    all_rooms: [],
     me:{}
   };
 
@@ -49,12 +56,17 @@ export const rx_me = (result) => ({
             return {
               ...state,
               all_users: action.result,
-            };
-            case RX_ME:
-              return {
-                ...state,
-                me: action.result,
-              };
+          };
+          case RX_ALL_ROOMS:
+            return {
+              ...state,
+              all_rooms: action.result,
+          };
+          case RX_ME:
+            return {
+              ...state,
+              me: action.result,
+          };
 
       default:
         return state;

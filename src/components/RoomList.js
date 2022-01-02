@@ -5,12 +5,11 @@ import ListSubheader from "@material-ui/core/ListSubheader";
 import { connect } from "react-redux";
 import { rx_authenticated, rx_all_users } from "../modules/chats";
 
-import FriendItem from "./FriendItem";
+import RoomItem from "./RoomItem";
 // import { delCookie } from "../cookie";
 
 import { Box, List, Button } from "@material-ui/core";
 
-import { cm_logout } from "../helpers/common";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -49,13 +48,13 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const FriendList = ({users, me, rx_authenticated, rx_all_users, all_users}) => {
+const RoomList = ({rooms, me, btn_logout}) => {
   const classes = useStyles();
 
 
 
   useEffect(() => {
-    console.log("[표시]FriendList.js");
+    console.log("[표시]RoomList.js");
 
   }, []);
 
@@ -64,16 +63,15 @@ const FriendList = ({users, me, rx_authenticated, rx_all_users, all_users}) => {
       <div  className={classes.title}>
         {me.username}
         <Button onClick={() => {
-            cm_logout(rx_authenticated,me,rx_all_users,all_users);
+            btn_logout();
           }}>로그아웃</Button>
       </div>
       <ListSubheader component="div">전체 친구 리스트</ListSubheader>
 
       <List className={classes.list}>
-       
-        {users.length > 0 ? (
-          users.map((user, index) => (
-            <FriendItem key={index} img="https://material-ui.com/static/images/avatar/1.jpg" text={user.username} sub={user.email} confirmed={user.confirmed} />
+        {rooms.length > 0 ? (
+          rooms.map((room, index) => (
+            <RoomItem key={index} img="https://material-ui.com/static/images/avatar/1.jpg" room={room} />
           ))
         ) : (
           <li>리스트가없습니다.</li>
@@ -97,4 +95,4 @@ const mapDispatchToProps = (dispatch) => ({
   },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(FriendList);
+export default connect(mapStateToProps, mapDispatchToProps)(RoomList);

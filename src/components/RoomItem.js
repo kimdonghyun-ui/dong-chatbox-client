@@ -43,31 +43,18 @@ const StyledBadge = withStyles((theme) => ({
   },
 }))(Badge);
 
-const FriendItem = ({
-  text,
-  sub,
-  confirmed,
-  uid,
-  avatar,
-  msg_key,
-  me,
-  invisible,
-  event,
-  rx_focusroom,
-  rx_focusmsg,
-  all_users,
-  msglength,
-  msglength2,
+const RoomItem = ({
+  room,
+  avatar
 }) => {
 
-
   return (
-    <li style={{ display: "block" }}>
-      <ListItem button onClick={() => alert('a') }>
+    <li style={{ display: "flex" }}>
+      <ListItem button onClick={() => console.log('이벤트')}>
         <ListItemAvatar>
           <Badge color="secondary" badgeContent={0}>
             <StyledBadge
-              invisible={!confirmed}
+              invisible={true}
               overlap="circular"
               anchorOrigin={{
                 vertical: "bottom",
@@ -79,12 +66,13 @@ const FriendItem = ({
             </StyledBadge>
           </Badge>
         </ListItemAvatar>
-        <ListItemText primary={text} secondary={sub} />
+        <ListItemText primary="ㅇㅇ" secondary="1:1대화방" />
       </ListItem>
-      {false && (
+      {true && (
         <Button
           onClick={() =>
-            alert('a')
+            // CM_removeRooms(msg_key, me, rx_focusroom, rx_focusmsg, all_users)
+          console.log('삭제')
           }
         >
           삭제
@@ -109,4 +97,4 @@ const FriendItem = ({
 //   },
 // });
 
-export default connect(null, null)(FriendItem);
+export default connect(null, null)(RoomItem);

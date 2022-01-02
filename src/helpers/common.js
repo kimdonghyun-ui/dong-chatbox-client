@@ -10,6 +10,41 @@ const api_url = "http://localhost:1337/";
 // const api_url = "https://dongdong-api.herokuapp.com/";
 
 
+
+
+
+
+
+
+
+
+
+//##########################################################
+//########### 접속유무 확인 ################
+//##########################################################
+export const cm_contact = async (id,state) => {
+  // rx_big_loading(true);
+  try {
+    await axios.put(api_url+'api/users/'+id, {
+      confirmed: state,
+    });
+    // socket.emit('all_users', all_users);
+    cm_all_users(socket);
+  } catch (e) {
+    console.log('접속유무 확인 실패');
+  }
+  // rx_big_loading(false);
+}
+//##########################################################
+
+
+
+
+
+
+
+
+
 //##########################################################
 //########### 회원가입 ################
 //##########################################################
@@ -116,19 +151,27 @@ export const cm_logout = (rx_authenticated,me,rx_all_users,all_users) => {
 
 
 
+
+
+
+
+
+
+
+
+
 //##########################################################
-//########### 접속유무 확인 ################
+//########### 룸리스트 ################
 //##########################################################
-export const cm_contact = async (id,state) => {
+export const cm_all_room = async (socket) => {
   // rx_big_loading(true);
   try {
-    await axios.put(api_url+'api/users/'+id, {
-      confirmed: state,
-    });
-    // socket.emit('all_users', all_users);
-    cm_all_users(socket);
+    const { data } = await axios.get(api_url+'api/rooms');
+    //console.log(data);
+    // rx_all_users(data);
+    socket.emit('all_rooms', data);
   } catch (e) {
-    console.log('접속유무 확인 실패');
+    console.log('룸리스트 실패');
   }
   // rx_big_loading(false);
 }
