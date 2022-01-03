@@ -25,7 +25,7 @@ function Chatbox({ rx_all_users, all_users, rx_all_rooms, all_rooms, me, rx_auth
       rx_all_users(user);
     });
     socket.on('room_update', function(room) {
-      rx_all_rooms(room.data);
+      rx_all_rooms(room);
     });
   // eslint-disable-next-line react-hooks/exhaustive-deps
   },[]);

@@ -47,23 +47,15 @@ const FriendItem = ({
   text,
   sub,
   confirmed,
-  uid,
   avatar,
-  msg_key,
-  me,
-  invisible,
   event,
-  rx_focusroom,
-  rx_focusmsg,
-  all_users,
-  msglength,
-  msglength2,
+  id
 }) => {
 
 
   return (
     <li style={{ display: "block" }}>
-      <ListItem button onClick={() => alert('a') }>
+      <ListItem button onClick={() => event(id) }>
         <ListItemAvatar>
           <Badge color="secondary" badgeContent={0}>
             <StyledBadge

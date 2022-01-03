@@ -3,7 +3,8 @@ import React, { useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import ListSubheader from "@material-ui/core/ListSubheader";
 import { connect } from "react-redux";
-import { rx_authenticated, rx_all_users } from "../modules/chats";
+import { rx_authenticated, rx_all_users, rx_all_rooms } from "../modules/chats";
+import { cm_roomadd } from "../helpers/common";
 
 import FriendItem from "./FriendItem";
 // import { delCookie } from "../cookie";
@@ -48,9 +49,13 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const FrienList = ({users, me, btn_logout}) => {
+const FrienList = ({users, me, btn_logout, all_rooms, rx_all_rooms}) => {
   const classes = useStyles();
+  const handleFriend = (you) => {
+    // cm_roomadd(me, you, allroomlist, rx_focusroom, rx_tabindex);
 
+    cm_roomadd(me.id, you, all_rooms);
+  };
 
 
   useEffect(() => {
@@ -71,7 +76,7 @@ const FrienList = ({users, me, btn_logout}) => {
       <List className={classes.list}>
         {users.length > 0 ? (
           users.map((user, index) => (
-            <FriendItem key={index} img="https://material-ui.com/static/images/avatar/1.jpg" text={user.username} sub={user.email} confirmed={user.confirmed} />
+            <FriendItem key={index} img="https://material-ui.com/static/images/avatar/1.jpg" text={user.username} sub={user.email} id={user.id} confirmed={user.confirmed} event={handleFriend} />
           ))
         ) : (
           <li>리스트가없습니다.</li>
@@ -84,6 +89,8 @@ const FrienList = ({users, me, btn_logout}) => {
 
 const mapStateToProps = (state) => ({
   all_users: state.chats.all_users,
+  all_rooms: state.chats.all_rooms,
+  me: state.chats.me
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -92,6 +99,9 @@ const mapDispatchToProps = (dispatch) => ({
   },
   rx_all_users: (val) => {
     dispatch(rx_all_users(val));
+  },
+  rx_all_rooms: (val) => {
+    dispatch(rx_all_rooms(val));
   },
 });
 

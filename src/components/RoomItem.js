@@ -1,7 +1,7 @@
 import React from "react";
 import { withStyles } from "@material-ui/core/styles";
 import Badge from "@material-ui/core/Badge";
-// import { CM_removeRooms } from "../helpers/common";
+import { cm_removerooms } from "../helpers/common";
 import { connect } from "react-redux";
 // import { fireauth } from "../services/firebase";
 
@@ -45,8 +45,24 @@ const StyledBadge = withStyles((theme) => ({
 
 const RoomItem = ({
   room,
-  avatar
+  avatar,
+  all_users,
+  all_rooms
 }) => {
+console.log('room',room)
+console.log('all_users',all_users)
+
+
+//인자값으로 들어온 id를 가진 유저데이터를 찾아서 이름을 꺼내기
+function id_name(names) {
+  return (
+    names !== undefined &&
+    all_users.length > 0 &&
+    all_users.filter((data) => data.id === names)[0].username
+  );
+}
+
+
 
   return (
     <li style={{ display: "flex" }}>
@@ -66,13 +82,20 @@ const RoomItem = ({
             </StyledBadge>
           </Badge>
         </ListItemAvatar>
-        <ListItemText primary="ㅇㅇ" secondary="1:1대화방" />
+        <ListItemText primary={
+                          Array.isArray(room.attributes.roomuser)
+                          ? room.attributes.roomuser.map((item, index) =>
+                              index > 0 ? `/${id_name(item)}` : id_name(item)
+                            )
+                          : id_name(room.attributes.roomuser)
+        } secondary="1:1대화방" />
       </ListItem>
       {true && (
         <Button
           onClick={() =>
             // CM_removeRooms(msg_key, me, rx_focusroom, rx_focusmsg, all_users)
-          console.log('삭제')
+            cm_removerooms(room.id,all_rooms)
+            // console.log('삭제')
           }
         >
           삭제
@@ -82,11 +105,11 @@ const RoomItem = ({
   );
 };
 
-// const mapStateToProps = (state) => ({
-//   all_users: state.chats.all_users,
-//   msglength: state.chats.msglength,
-//   msglength2: state.chats.msglength2,
-// });
+const mapStateToProps = (state) => ({
+  all_rooms: state.chats.all_rooms,
+  // msglength: state.chats.msglength,
+  // msglength2: state.chats.msglength2,
+});
 
 // const mapDispatchToProps = (dispatch) => ({
 //   rx_focusroom: (val) => {
@@ -97,4 +120,4 @@ const RoomItem = ({
 //   },
 // });
 
-export default connect(null, null)(RoomItem);
+export default connect(mapStateToProps, null)(RoomItem);

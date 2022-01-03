@@ -48,7 +48,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const RoomList = ({rooms, me, btn_logout}) => {
+const RoomList = ({rooms, me, btn_logout, all_users}) => {
   const classes = useStyles();
 
 
@@ -71,7 +71,7 @@ const RoomList = ({rooms, me, btn_logout}) => {
       <List className={classes.list}>
         {rooms.length > 0 ? (
           rooms.map((room, index) => (
-            <RoomItem key={index} img="https://material-ui.com/static/images/avatar/1.jpg" room={room} />
+            <RoomItem key={index} img="https://material-ui.com/static/images/avatar/1.jpg" room={room} all_users={all_users} />
           ))
         ) : (
           <li>리스트가없습니다.</li>
