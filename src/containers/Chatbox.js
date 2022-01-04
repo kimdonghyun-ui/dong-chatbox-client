@@ -18,8 +18,9 @@ function Chatbox({ rx_all_users, all_users, rx_all_rooms, all_rooms, me, rx_auth
 
   const hendle_logout = () => cm_logout(rx_authenticated,me,rx_all_users,all_users);
 
-
-  const socket = io.connect("http://localhost:4001");
+  
+  // const socket = io.connect("http://localhost:4001");
+  const socket = io.connect("https://dong-chatbox-server.herokuapp.com");
 
   useEffect(() => {
     cm_all_room(socket);
