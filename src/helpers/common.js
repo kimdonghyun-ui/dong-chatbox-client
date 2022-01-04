@@ -6,8 +6,8 @@ import axios from "axios";
 import io from "socket.io-client";
 const socket = io.connect("http://localhost:4001");
 
-const api_url = "http://localhost:1337/";
-// const api_url = "https://dongdong-api.herokuapp.com/";
+//const api_url = "http://localhost:1337/";
+const api_url = "https://dongdong-api.herokuapp.com/";
 
 
 
@@ -186,12 +186,7 @@ export const cm_all_room = async (socket) => {
 
 
 
-function uuidv4() {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-    var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
-    return v.toString(16);
-  });
-}
+
 
 const roomadd = async (me,you,all_rooms) => {
   console.log('시발'+me,you)
@@ -201,10 +196,11 @@ const roomadd = async (me,you,all_rooms) => {
         {
           "msglist":[
           //   {
-          //   key:uuidv4(),
+          //   uid:uuidv4(),
           //   message:`${me+you}님 입장`,
           //   name:"헬로우123",
-          //   timestamp:1638161877523
+          //   timestamp:1638161877523,
+          //   userid:
           // }
         ],
           "roomuser":[me,you]
@@ -331,3 +327,53 @@ export const cm_removerooms = async (id,all_rooms) => {
 //##########################################################
 
 
+
+//##########################################################
+//########### 메시지 서버로 보내기(firebase) ################
+//##########################################################
+export const cm_sendChat = async(room,focusroom,all_rooms) => {
+  try {
+    const { data } = await axios.put(api_url+'api/rooms/'+focusroom, {
+      "data":
+        {
+          "msglist":room[0].attributes.msglist
+        }
+      });
+      socket.emit('all_rooms', all_rooms);
+    console.log('data',data);
+
+
+
+    console.log('all_rooms', all_rooms);
+
+    // rx_all_users(data);
+    // let hello = all_rooms.filter((item) => item.id !== id );
+    // socket.emit('all_rooms', hello);
+  } catch (e) {
+    console.log('메시지 전송 실패');
+    console.log('all_rooms', all_rooms);
+
+  }
+
+
+
+  // if (focusroom !== "") {
+  //   var newPostKey = firedatabase.ref(`msg/${focusroom}`).push().key;
+
+  //   var postData = {
+  //     message: msg.message,
+  //     timestamp: msg.timestamp,
+  //     uid: msg.uid,
+  //     avatar: msg.avatar,
+  //     key: newPostKey,
+  //     name: msg.name,
+  //   };
+
+  //   var updates = {};
+  //   updates[`msg/${focusroom}/${newPostKey}`] = postData;
+  //   return firedatabase.ref().update(updates);
+  // } else {
+  //   alert("방을 선택해주세요");
+  // }
+} //cm_sendChat
+//##########################################################

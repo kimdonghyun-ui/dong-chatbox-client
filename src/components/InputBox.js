@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import { connect } from "react-redux";
-import { fireauth } from "../services/firebase";
-import { sendChat, CM_my_msgLength_change } from "../helpers/common";
+// import { fireauth } from "../services/firebase";
+import { cm_sendChat } from "../helpers/common";
 
 import { makeStyles } from "@material-ui/core/styles";
 import SendIcon from "@material-ui/icons/Send";
 import { Box, Button, TextField } from "@material-ui/core";
 
-import { rx_msglength2 } from "../modules/chats";
+// import { rx_all_rooms } from "../modules/chats";
 
 const useStyles = makeStyles((theme) => ({
   InputBox: {
@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const InputBox = ({ focusroom, me, rx_msglength2, msglength2 }) => {
+const InputBox = ({ focusroom, me, rx_all_rooms, all_rooms }) => {
   const classes = useStyles();
   const [msg, setMsg] = useState("");
 
@@ -36,23 +36,38 @@ const InputBox = ({ focusroom, me, rx_msglength2, msglength2 }) => {
     setMsg(e.target.value);
   };
 
+
+  function uuidv4() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+      var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+      return v.toString(16);
+    });
+  }
+          //   uid:uuidv4(),
+          //   message:`${me+you}님 입장`,
+          //   name:"헬로우123",
+          //   timestamp:1638161877523,
+          //   userid:
   const handleSumbit = async (e) => {
     e.preventDefault();
     setMsg("");
-    sendChat(
-      {
-        message: msg,
-        timestamp: Date.now(),
-        uid: fireauth.currentUser.uid,
-        avatar: me.avatar,
-        name:
-          fireauth.currentUser.displayName === null
-            ? me.name
-            : fireauth.currentUser.displayName,
-      },
-      focusroom
+
+    console.log('all_rooms',all_rooms)
+    all_rooms.map((item) => item.id === focusroom && item.attributes.msglist.push(      {
+        uid:uuidv4(),
+        message:msg,
+        name:me.username,
+        timestamp:Date.now(),
+        userid:me.id
+  })  )
+    // console.log('all_rooms2',all_rooms.filter((item) => item.id === focusroom))
+    rx_all_rooms(all_rooms);
+    // const hee = all_rooms.fiter((item) => item.id === focusroom )
+// console.log('시시시시시',hee)
+    cm_sendChat(
+        all_rooms.filter((item) => item.id === focusroom),focusroom,all_rooms
     );
-    CM_my_msgLength_change(focusroom, rx_msglength2, msglength2);
+    // CM_my_msgLength_change(focusroom, rx_msglength2, msglength2);
   };
 
   return (
@@ -79,16 +94,16 @@ const InputBox = ({ focusroom, me, rx_msglength2, msglength2 }) => {
   );
 };
 
-const mapStateToProps = (state) => ({
-  focusroom: state.chats.focusroom,
-  me: state.chats.me[0],
-  msglength2: state.chats.msglength2,
-});
+// const mapStateToProps = (state) => ({
+//   focusroom: state.chats.focusroom,
+//   me: state.chats.me[0],
+//   msglength2: state.chats.msglength2,
+// });
 
-const mapDispatchToProps = (dispatch) => ({
-  rx_msglength2: (val) => {
-    dispatch(rx_msglength2(val));
-  },
-});
+// const mapDispatchToProps = (dispatch) => ({
+//   rx_msglength2: (val) => {
+//     dispatch(rx_msglength2(val));
+//   },
+// });
 
-export default connect(mapStateToProps, mapDispatchToProps)(InputBox);
+export default connect(null, null)(InputBox);

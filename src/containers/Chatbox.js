@@ -12,7 +12,7 @@ import {
 import TabBox from "../components/TabBox";
 
 import Message from "../components/Message";
-// import InputBox from "../components/InputBox";
+import InputBox from "../components/InputBox";
 
 function Chatbox({ rx_all_users, all_users, rx_all_rooms, all_rooms, me, rx_authenticated, rx_focusroom, focusroom }) {
 
@@ -51,7 +51,7 @@ console.log('#####all_rooms')
           <RoomList rooms={all_rooms} me={me} btn_logout={hendle_logout} />,
           <>
             <Message msgs={hello(focusroom)} me={me} btn_logout={hendle_logout}  />
-            {/* <InputBox /> */}
+            <InputBox me={me} focusroom={focusroom} rx_all_rooms={rx_all_rooms} all_rooms={all_rooms} />
           </>,
         ]}
       />
