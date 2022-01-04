@@ -186,7 +186,12 @@ export const cm_all_room = async (socket) => {
 
 
 
-
+function uuidv4() {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
+}
 
 const roomadd = async (me,you,all_rooms) => {
   console.log('시발'+me,you)
@@ -194,7 +199,14 @@ const roomadd = async (me,you,all_rooms) => {
     const { data } = await axios.post(api_url+'api/rooms/', {
       "data":
         {
-          "msg": {},
+          "msglist":[
+          //   {
+          //   key:uuidv4(),
+          //   message:`${me+you}님 입장`,
+          //   name:"헬로우123",
+          //   timestamp:1638161877523
+          // }
+        ],
           "roomuser":[me,you]
         }
       });

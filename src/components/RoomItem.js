@@ -47,7 +47,8 @@ const RoomItem = ({
   room,
   avatar,
   all_users,
-  all_rooms
+  all_rooms,
+  event
 }) => {
 console.log('room',room)
 console.log('all_users',all_users)
@@ -66,7 +67,7 @@ function id_name(names) {
 
   return (
     <li style={{ display: "flex" }}>
-      <ListItem button onClick={() => console.log('이벤트')}>
+      <ListItem button onClick={() => event(room.id)}>
         <ListItemAvatar>
           <Badge color="secondary" badgeContent={0}>
             <StyledBadge

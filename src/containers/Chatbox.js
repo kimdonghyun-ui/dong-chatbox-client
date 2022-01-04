@@ -5,13 +5,16 @@ import RoomList from "../components/RoomList";
 import io from "socket.io-client";
 
 import { cm_all_users, cm_all_room, cm_logout } from "../helpers/common";
-import { rx_all_users, rx_all_rooms, rx_authenticated } from "../modules/chats";
+import { rx_all_users, rx_all_rooms, rx_authenticated, rx_focusroom } from "../modules/chats";
 import {
   CssBaseline,
 } from "@material-ui/core";
 import TabBox from "../components/TabBox";
 
-function Chatbox({ rx_all_users, all_users, rx_all_rooms, all_rooms, me, rx_authenticated }) {
+import Message from "../components/Message";
+// import InputBox from "../components/InputBox";
+
+function Chatbox({ rx_all_users, all_users, rx_all_rooms, all_rooms, me, rx_authenticated, rx_focusroom, focusroom }) {
 
   const hendle_logout = () => cm_logout(rx_authenticated,me,rx_all_users,all_users);
 
@@ -31,6 +34,14 @@ function Chatbox({ rx_all_users, all_users, rx_all_rooms, all_rooms, me, rx_auth
   },[]);
   // cm_logout(rx_authenticated,me,rx_all_users,all_users);
 
+
+console.log('#####all_rooms',focusroom)
+const hello = (id) => all_rooms.filter((item,index) => item.id === id  ) 
+console.log(hello(focusroom))
+console.log('#####all_rooms')
+
+
+
   return (
     <React.Fragment>
       <CssBaseline />
@@ -38,7 +49,10 @@ function Chatbox({ rx_all_users, all_users, rx_all_rooms, all_rooms, me, rx_auth
         content={[
           <FrienList users={all_users} me={me} btn_logout={hendle_logout} />,
           <RoomList rooms={all_rooms} me={me} btn_logout={hendle_logout} />,
-          <FrienList users={all_users} me={me} />,
+          <>
+            <Message msgs={hello(focusroom)} me={me} btn_logout={hendle_logout}  />
+            {/* <InputBox /> */}
+          </>,
         ]}
       />
     </React.Fragment>
@@ -50,6 +64,7 @@ const mapStateToProps = (state) => ({
   all_users: state.chats.all_users,
   all_rooms: state.chats.all_rooms,
   me: state.chats.me,
+  focusroom: state.chats.focusroom
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -61,6 +76,9 @@ const mapDispatchToProps = (dispatch) => ({
   },
   rx_authenticated: (val) => {
     dispatch(rx_authenticated(val));
+  },
+  rx_focusroom: (val) => {
+    dispatch(rx_focusroom(val));
   },
 });
 

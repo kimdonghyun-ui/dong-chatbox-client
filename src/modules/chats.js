@@ -3,6 +3,7 @@ const RX_BIG_LOADING = "menu/RX_BIG_LOADING";
 const RX_ALL_USERS = "menu/RX_ALL_USERS";
 const RX_ALL_ROOMS = "menu/RX_ALL_ROOMS";
 const RX_ME = "menu/RX_ME";
+const RX_FOCUSROOM = "menu/RX_FOCUSROOM";
 
 export const rx_authenticated = (result) => ({
     type: RX_AUTHENTICATED,
@@ -29,6 +30,10 @@ export const rx_me = (result) => ({
   result,
 });
 
+export const rx_focusroom = (result) => ({
+  type: RX_FOCUSROOM,
+  result,
+});
 
 
 
@@ -37,7 +42,8 @@ export const rx_me = (result) => ({
     big_loading: false,
     all_users: [],
     all_rooms: [],
-    me:{}
+    me:{},
+    focusroom: 0,
   };
 
   function chats(state = initialState, action) {
@@ -67,6 +73,14 @@ export const rx_me = (result) => ({
               ...state,
               me: action.result,
           };
+          case RX_FOCUSROOM:
+            return {
+              ...state,
+              focusroom: action.result,
+            };
+
+
+
 
       default:
         return state;
