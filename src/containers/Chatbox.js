@@ -1,8 +1,8 @@
-import React,{ useEffect, useState } from "react";
+import React,{ useEffect } from "react";
 
 /* redux */
 import { connect } from "react-redux";
-import { rx_all_users, rx_all_rooms, rx_authenticated, rx_focusroom } from "../modules/chats";
+import { rx_all_users, rx_all_rooms, rx_authenticated, rx_focusroom, rx_msgbox } from "../modules/chats";
 
 /* material-ui */
 import { CssBaseline } from "@material-ui/core";
@@ -19,8 +19,8 @@ import InputBox from "../components/InputBox";
 
 
 
-function Chatbox({ rx_all_users, all_users, rx_all_rooms, all_rooms, me, rx_authenticated, rx_focusroom, focusroom }) {
-  const [count, setCount] = useState(0);
+function Chatbox({ rx_all_users, all_users, rx_all_rooms, all_rooms, me, rx_authenticated, rx_focusroom, focusroom, rx_msgbox, msgbox }) {
+  // const [count, setCount] = useState(0);
 
   /* hendle_logout(로그아웃 버튼) */
   const hendle_logout = () => cm_logout(rx_authenticated,me);
@@ -37,15 +37,23 @@ function Chatbox({ rx_all_users, all_users, rx_all_rooms, all_rooms, me, rx_auth
     socket.on('room_update', function(room) {
       rx_all_rooms(room);
     });
+
+    socket.on('msgs_update', function(msg) {
+      console.log('msgs_update',msg);
+      msg && rx_msgbox(msg);
+    });
+
   // eslint-disable-next-line react-hooks/exhaustive-deps
   },[]);
  
 
   useEffect(() => {
-    console.log('#####all_rooms',focusroom)
-    const hello = (id) => all_rooms.filter((item,index) => item.id === id  ) 
-    console.log(hello(focusroom))
-    setCount(hello(focusroom))
+    console.log('#####all_rooms',focusroom);
+    let new_msgs = focusroom > 0 && all_rooms.filter((item) => item.id === focusroom)[0].attributes.msglist;
+    socket.emit('msgs', new_msgs);
+    // const hello = (id) => all_rooms.filter((item,index) => item.id === id  ) 
+    // console.log(hello(focusroom))
+    // setCount(hello(focusroom))
     console.log('#####all_rooms')
   // eslint-disable-next-line react-hooks/exhaustive-deps
   },[all_rooms,focusroom]);
@@ -62,7 +70,7 @@ function Chatbox({ rx_all_users, all_users, rx_all_rooms, all_rooms, me, rx_auth
           <FrienList users={all_users} me={me} btn_logout={hendle_logout} />,
           <RoomList rooms={all_rooms} me={me} btn_logout={hendle_logout} />,
           <>
-            <Message msgs={count} me={me} btn_logout={hendle_logout}  />
+            <Message msgs={msgbox} me={me} btn_logout={hendle_logout}  />
             <InputBox me={me} focusroom={focusroom} rx_all_rooms={rx_all_rooms} all_rooms={all_rooms} />
           </>,
         ]}
@@ -76,7 +84,8 @@ const mapStateToProps = (state) => ({
   all_users: state.chats.all_users,
   all_rooms: state.chats.all_rooms,
   me: state.chats.me,
-  focusroom: state.chats.focusroom
+  focusroom: state.chats.focusroom,
+  msgbox: state.chats.msgbox,
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -92,6 +101,11 @@ const mapDispatchToProps = (dispatch) => ({
   rx_focusroom: (val) => {
     dispatch(rx_focusroom(val));
   },
+  rx_msgbox: (val) => {
+    dispatch(rx_msgbox(val));
+  },
+
+  
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Chatbox);

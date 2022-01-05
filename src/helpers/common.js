@@ -4,11 +4,11 @@ import axios from "axios";
 
 
 import io from "socket.io-client";
-export const socket = io.connect("http://localhost:4001");
-// export const socket = io.connect("https://dong-chatbox-server.herokuapp.com");
+// export const socket = io.connect("http://localhost:4001");
+export const socket = io.connect("https://dong-chatbox-server.herokuapp.com");
 
-const api_url = "http://localhost:1337/";
-// const api_url = "https://dongdong-api.herokuapp.com/";
+// const api_url = "http://localhost:1337/";
+const api_url = "https://dongdong-api.herokuapp.com/";
 
 
 
@@ -174,6 +174,7 @@ export const cm_all_rooms = async () => {
     const { data } = await axios.get(api_url+'api/rooms');
     console.log('cm_all_rooms성공 소켓에 알리기',data.data)
     socket.emit('all_rooms', data.data);
+    socket.emit('msgs', data.data);
   } catch (e) {
     console.log('룸리스트 실패');
   }
@@ -338,31 +339,23 @@ export const cm_sendChat = async(room,focusroom,all_rooms) => {
 //##########################################################
 //########### 메시지삭제 ################
 //##########################################################
-export const cm_removeChat = async (focusroom,msg,re_msg) => {
+export const cm_removeChat = async (focusroom,hello) => {
   try {
     await axios.put(api_url+'api/rooms/'+focusroom, {
       "data":
         {
-          "msglist":msg
+          "msglist":hello
         }
       });
+      socket.emit('msgs', hello);
 
-      socket.emit('all_rooms', re_msg);
     console.log('#####cm_removeChat성공#####');
-    console.log('msg',msg);
-
-    
-
-    console.log('all_rooms', re_msg );
+    console.log(hello);
     console.log('#####cm_removeChat성공#####');
 
-    // rx_all_users(data);
-    // let hello = all_rooms.filter((item) => item.id !== id );
-    // socket.emit('all_rooms', hello);
   } catch (e) {
     console.log('#####cm_removeChat실패#####');
-    console.log('메시지삭제 실패');
-    console.log('all_rooms', re_msg);
+    console.log(hello);
     console.log('#####cm_removeChat실패#####');
   }
 }

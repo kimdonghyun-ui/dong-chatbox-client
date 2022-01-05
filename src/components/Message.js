@@ -1,7 +1,6 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import { connect } from "react-redux";
-// import { rx_remove } from "../modules/chats";
-// import { fireauth } from "../services/firebase";
+
 
 import * as dateFns from "date-fns";
 import { cm_removeChat } from "../helpers/common";
@@ -92,8 +91,8 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const Message = ({ msgs, me, btn_logout, focusroom, all_rooms }) => {
-  const [count, setCount] = useState(0);
+const Message = ({ msgs, me, btn_logout, focusroom }) => {
+  // const [count, setCount] = useState(0);
 
   const classes = useStyles();
 
@@ -105,35 +104,16 @@ const Message = ({ msgs, me, btn_logout, focusroom, all_rooms }) => {
     intervalId.current.scrollTo(0, scroll);
   }
 
+  /* 메시지 삭제 */
   const hendle_msgRemove = (uid) => {
-    const clone_all_rooms = all_rooms;
-    const msg = clone_all_rooms.filter((item) => item.id === focusroom )[0].attributes.msglist.filter((item) => item.uid !== uid );
-
-    console.log(msg);
-    const re_msg = all_rooms.map((item) => {
-      if(item.id === focusroom){
-         item.attributes.msglist = msg
-      }
-      return item
-    } )
-    console.log('re_msg',re_msg,focusroom);
-
-    cm_removeChat(focusroom,msg,re_msg);
-//     all_rooms.map((item) => item.id === focusroom && item.attributes.msglist.push(      {
-//       uid:uuidv4(),
-//       message:msg,
-//       name:me.username,
-//       timestamp:Date.now(),
-//       userid:me.id
-// }) 
-  }
+    let data = msgs.filter((item) => item.uid !== uid);
+    console.log('메시지 삭제',data);
+    cm_removeChat(focusroom,data);
+  };
 
 
   useEffect(() => {
     console.log('#####Message')
-    console.log(msgs[0] && msgs[0].attributes.msglist);
-    setCount(msgs[0] ? msgs[0].attributes.msglist : 0 )
-
     console.log("[표시]Message.js");
     scrollToMyRef();
     console.log('#####Message')
@@ -162,8 +142,8 @@ const Message = ({ msgs, me, btn_logout, focusroom, all_rooms }) => {
         {/* {focusroom !== "" && <FriendAdd />} */}
       </ListSubheader>
       <List className={classes.listBox} ref={intervalId}>
-        {count.length > 0 ? (
-          count.map((data, index) => (
+        {msgs.length > 0 ? (
+          msgs.map((data, index) => (
             <ListItem key={index} className={classes.listBoxItem}>
               <Box
                 style={{
@@ -229,8 +209,6 @@ const Message = ({ msgs, me, btn_logout, focusroom, all_rooms }) => {
 
 const mapStateToProps = (state) => ({
   focusroom: state.chats.focusroom,
-  all_rooms: state.chats.all_rooms
-//   me: state.chats.me[0],
 });
 
 // const mapDispatchToProps = (dispatch) => ({
