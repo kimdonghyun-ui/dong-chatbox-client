@@ -48,8 +48,9 @@ function Chatbox({ rx_all_users, all_users, rx_all_rooms, all_rooms, me, rx_auth
  
 
   useEffect(() => {
-    console.log('#####all_rooms',focusroom);
-    let new_msgs = focusroom > 0 && all_rooms.filter((item) => item.id === focusroom)[0].attributes.msglist;
+    console.log('#####all_rooms',focusroom,all_rooms);
+    let new_msgs = (focusroom > 0 && all_rooms.length > 0 ) && all_rooms.filter((item) => item.id === focusroom)[0].attributes.msglist;
+    console.log("new_msgs123456",new_msgs)
     socket.emit('msgs', new_msgs);
     // const hello = (id) => all_rooms.filter((item,index) => item.id === id  ) 
     // console.log(hello(focusroom))

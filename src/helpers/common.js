@@ -293,10 +293,10 @@ export const cm_sendChat = async(room,focusroom,all_rooms) => {
     const { data } = await axios.put(api_url+'api/rooms/'+focusroom, {
       "data":
         {
-          "msglist":room[0].attributes.msglist
+          "msglist":room
         }
       });
-      socket.emit('all_rooms', all_rooms);
+      socket.emit('msgs', room);
     console.log('#####cm_sendChat성공#####');
     console.log('data',data);
     console.log('all_rooms', all_rooms);
@@ -307,7 +307,8 @@ export const cm_sendChat = async(room,focusroom,all_rooms) => {
     // socket.emit('all_rooms', hello);
   } catch (e) {
     console.log('#####cm_sendChat실패#####');
-    console.log('메시지 전송 실패');
+    console.log('메시지 전송 실패',e);
+    console.log('room', room);
     console.log('all_rooms', all_rooms);
     console.log('#####cm_sendChat실패#####');
   }

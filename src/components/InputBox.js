@@ -52,21 +52,25 @@ const InputBox = ({ focusroom, me, rx_all_rooms, all_rooms }) => {
   const handleSumbit = async (e) => {
     e.preventDefault();
     setMsg("");
-
     console.log('all_rooms',all_rooms)
-    all_rooms.map((item) => item.id === focusroom && item.attributes.msglist.push(      {
+
+    let hello = all_rooms.filter((item) => item.id === focusroom && item.attributes.msglist.push(      {
         uid:uuidv4(),
         message:msg,
         name:me.username,
         timestamp:Date.now(),
         userid:me.id
   })  )
-    // console.log('all_rooms2',all_rooms.filter((item) => item.id === focusroom))
-    rx_all_rooms(all_rooms);
+  console.log('all_rooms',hello[0].attributes.msglist)
+
+  //   console.log('all_rooms2',all_rooms.filter((item) => item.id === focusroom))
+  //   console.log('all_rooms',all_rooms)
+
+    // rx_all_rooms(all_rooms);
     // const hee = all_rooms.fiter((item) => item.id === focusroom )
 // console.log('시시시시시',hee)
     cm_sendChat(
-        all_rooms.filter((item) => item.id === focusroom),focusroom,all_rooms
+      hello[0].attributes.msglist,focusroom,all_rooms
     );
     // CM_my_msgLength_change(focusroom, rx_msglength2, msglength2);
   };
