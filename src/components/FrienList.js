@@ -3,7 +3,7 @@ import React, { useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import ListSubheader from "@material-ui/core/ListSubheader";
 import { connect } from "react-redux";
-import { rx_authenticated, rx_all_users, rx_all_rooms } from "../modules/chats";
+import { rx_authenticated, rx_all_users, rx_all_rooms, rx_tabindex } from "../modules/chats";
 import { cm_roomadd } from "../helpers/common";
 
 import FriendItem from "./FriendItem";
@@ -49,11 +49,11 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const FrienList = ({users, me, btn_logout, all_rooms, rx_all_rooms}) => {
+const FrienList = ({users, me, btn_logout, all_rooms, rx_all_rooms, rx_tabindex}) => {
   const classes = useStyles();
   const handleFriend = (you) => {
     // cm_roomadd(me, you, allroomlist, rx_focusroom, rx_tabindex);
-
+    rx_tabindex(1);
     cm_roomadd(me.id, you, all_rooms);
   };
 
@@ -102,6 +102,9 @@ const mapDispatchToProps = (dispatch) => ({
   },
   rx_all_rooms: (val) => {
     dispatch(rx_all_rooms(val));
+  },
+  rx_tabindex: (val) => {
+    dispatch(rx_tabindex(val));
   },
 });
 

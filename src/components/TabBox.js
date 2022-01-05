@@ -8,7 +8,7 @@ import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import QuestionAnswerIcon from "@material-ui/icons/QuestionAnswer";
 import Box from "@material-ui/core/Box";
-// import { rx_tabindex } from "../modules/chats";
+import { rx_tabindex } from "../modules/chats";
 import ViewColumnIcon from "@material-ui/icons/ViewColumn";
 import { connect } from "react-redux";
 import Badge from "@material-ui/core/Badge";
@@ -57,20 +57,22 @@ function a11yProps(index) {
   };
 }
 
-const TabBox = ({ content }) => {
+const TabBox = ({ content, tabindex, rx_tabindex }) => {
   const classes = useStyles();
   const [value, setValue] = React.useState(0);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
-    // rx_tabindex(newValue);
+    rx_tabindex(newValue);
   };
 
+
   useEffect(() => {
-    console.log("[표시]TabBox.js");
-    // setValue(tabindex);
+    console.log("[표시]TabBox.js", tabindex);
+    setValue(tabindex);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [tabindex]);
+
 
   return (
     <Paper square className={classes.root}>
@@ -110,15 +112,15 @@ const TabBox = ({ content }) => {
   );
 };
 
-// const mapStateToProps = (state) => ({
-//   tabindex: state.chats.tabindex,
-//   all_my_msglength: state.chats.all_my_msglength,
-// });
+const mapStateToProps = (state) => ({
+  tabindex: state.chats.tabindex,
+  // all_my_msglength: state.chats.all_my_msglength,
+});
 
-// const mapDispatchToProps = (dispatch) => ({
-//   rx_tabindex: (val) => {
-//     dispatch(rx_tabindex(val));
-//   },
-// });
+const mapDispatchToProps = (dispatch) => ({
+  rx_tabindex: (val) => {
+    dispatch(rx_tabindex(val));
+  },
+});
 
-export default connect(null, null)(TabBox);
+export default connect(mapStateToProps, mapDispatchToProps)(TabBox);

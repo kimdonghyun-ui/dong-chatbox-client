@@ -4,6 +4,8 @@ const RX_ALL_USERS = "menu/RX_ALL_USERS";
 const RX_ALL_ROOMS = "menu/RX_ALL_ROOMS";
 const RX_ME = "menu/RX_ME";
 const RX_FOCUSROOM = "menu/RX_FOCUSROOM";
+const RX_TABINDEX = "menu/RX_TABINDEX";
+
 
 export const rx_authenticated = (result) => ({
     type: RX_AUTHENTICATED,
@@ -35,6 +37,10 @@ export const rx_focusroom = (result) => ({
   result,
 });
 
+export const rx_tabindex = (result) => ({
+  type: RX_TABINDEX,
+  result,
+});
 
 
   const initialState = {
@@ -44,6 +50,7 @@ export const rx_focusroom = (result) => ({
     all_rooms: [],
     me:{},
     focusroom: 0,
+    tabindex:0
   };
 
   function chats(state = initialState, action) {
@@ -77,10 +84,12 @@ export const rx_focusroom = (result) => ({
             return {
               ...state,
               focusroom: action.result,
-            };
-
-
-
+          };
+          case RX_TABINDEX:
+            return {
+              ...state,
+              tabindex: action.result,
+          };
 
       default:
         return state;

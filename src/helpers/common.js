@@ -330,7 +330,7 @@ export const cm_removerooms = async (id,all_rooms) => {
 
 
 //##########################################################
-//########### 메시지 서버로 보내기(firebase) ################
+//########### 메시지 서버로 보내기 ################
 //##########################################################
 export const cm_sendChat = async(room,focusroom,all_rooms) => {
   try {
@@ -341,19 +341,19 @@ export const cm_sendChat = async(room,focusroom,all_rooms) => {
         }
       });
       socket.emit('all_rooms', all_rooms);
+    console.log('#####cm_sendChat성공#####');
     console.log('data',data);
-
-
-
     console.log('all_rooms', all_rooms);
+    console.log('#####cm_sendChat성공#####');
 
     // rx_all_users(data);
     // let hello = all_rooms.filter((item) => item.id !== id );
     // socket.emit('all_rooms', hello);
   } catch (e) {
+    console.log('#####cm_sendChat실패#####');
     console.log('메시지 전송 실패');
     console.log('all_rooms', all_rooms);
-
+    console.log('#####cm_sendChat실패#####');
   }
 
 
@@ -377,4 +377,38 @@ export const cm_sendChat = async(room,focusroom,all_rooms) => {
   //   alert("방을 선택해주세요");
   // }
 } //cm_sendChat
+//##########################################################
+
+
+//##########################################################
+//########### 메시지삭제 ################
+//##########################################################
+export const cm_removeChat = async (focusroom,msg,re_msg) => {
+  try {
+    await axios.put(api_url+'api/rooms/'+focusroom, {
+      "data":
+        {
+          "msglist":msg
+        }
+      });
+
+      socket.emit('all_rooms', re_msg);
+    console.log('#####cm_removeChat성공#####');
+    console.log('msg',msg);
+
+    
+
+    console.log('all_rooms', re_msg );
+    console.log('#####cm_removeChat성공#####');
+
+    // rx_all_users(data);
+    // let hello = all_rooms.filter((item) => item.id !== id );
+    // socket.emit('all_rooms', hello);
+  } catch (e) {
+    console.log('#####cm_removeChat실패#####');
+    console.log('메시지삭제 실패');
+    console.log('all_rooms', re_msg);
+    console.log('#####cm_removeChat실패#####');
+  }
+}
 //##########################################################

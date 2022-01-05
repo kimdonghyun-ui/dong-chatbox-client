@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 // import { fireauth } from "../services/firebase";
 
 // import * as dateFns from "date-fns";
-// import { cm_logout } from "../helpers/common";
+import { cm_removeChat } from "../helpers/common";
 import ListSubheader from "@material-ui/core/ListSubheader";
 
 import {
@@ -16,7 +16,6 @@ import {
   Avatar,
   Typography,
   Button,
-  CircularProgress,
 } from "@material-ui/core";
 
 import { makeStyles } from "@material-ui/core/styles";
@@ -93,7 +92,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const Message = ({ msgs, me, btn_logout }) => {
+const Message = ({ msgs, me, btn_logout, focusroom, all_rooms }) => {
   const [count, setCount] = useState(0);
 
   const classes = useStyles();
@@ -106,6 +105,30 @@ const Message = ({ msgs, me, btn_logout }) => {
     intervalId.current.scrollTo(0, scroll);
   }
 
+  const hendle_msgRemove = (uid) => {
+    const clone_all_rooms = all_rooms;
+    const msg = clone_all_rooms.filter((item) => item.id === focusroom )[0].attributes.msglist.filter((item) => item.uid !== uid );
+
+    console.log(msg);
+    const re_msg = all_rooms.map((item) => {
+      if(item.id === focusroom){
+         item.attributes.msglist = msg
+      }
+      return item
+    } )
+    console.log('re_msg',re_msg,focusroom);
+
+    cm_removeChat(focusroom,msg,re_msg);
+//     all_rooms.map((item) => item.id === focusroom && item.attributes.msglist.push(      {
+//       uid:uuidv4(),
+//       message:msg,
+//       name:me.username,
+//       timestamp:Date.now(),
+//       userid:me.id
+// }) 
+  }
+
+
   useEffect(() => {
     console.log('#####Message')
     console.log(msgs[0] && msgs[0].attributes.msglist);
@@ -115,7 +138,7 @@ const Message = ({ msgs, me, btn_logout }) => {
     scrollToMyRef();
     console.log('#####Message')
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [msgs]);
 
   return (
     <Box
@@ -189,7 +212,7 @@ const Message = ({ msgs, me, btn_logout }) => {
                         ? "none"
                         : "inline-flex",
                   }}
-                  onClick={() => console.log('삭제')}
+                  onClick={() => hendle_msgRemove(data.uid)}
                 >
                   삭제
                 </Button>
@@ -204,10 +227,11 @@ const Message = ({ msgs, me, btn_logout }) => {
   );
 };
 
-// const mapStateToProps = (state) => ({
-//   focusroom: state.chats.focusroom,
-// //   me: state.chats.me[0],
-// });
+const mapStateToProps = (state) => ({
+  focusroom: state.chats.focusroom,
+  all_rooms: state.chats.all_rooms
+//   me: state.chats.me[0],
+});
 
 // const mapDispatchToProps = (dispatch) => ({
 //   rx_remove: (val) => {
@@ -215,4 +239,4 @@ const Message = ({ msgs, me, btn_logout }) => {
 //   },
 // });
 
-export default connect(null, null)(Message);
+export default connect(mapStateToProps, null)(Message);

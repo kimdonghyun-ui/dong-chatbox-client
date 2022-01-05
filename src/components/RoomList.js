@@ -3,7 +3,7 @@ import React, { useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import ListSubheader from "@material-ui/core/ListSubheader";
 import { connect } from "react-redux";
-import { rx_authenticated, rx_all_users, rx_focusroom } from "../modules/chats";
+import { rx_authenticated, rx_all_users, rx_focusroom, rx_tabindex } from "../modules/chats";
 
 import RoomItem from "./RoomItem";
 // import { delCookie } from "../cookie";
@@ -48,10 +48,13 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const RoomList = ({rooms, me, btn_logout, all_users, rx_focusroom}) => {
+const RoomList = ({rooms, me, btn_logout, all_users, rx_focusroom, rx_tabindex}) => {
   const classes = useStyles();
 
-
+  const hendle_focusroom = (i) => {
+    rx_tabindex(2);
+    rx_focusroom(i);
+  }
 
   useEffect(() => {
     console.log("[표시]RoomList.js");
@@ -71,7 +74,7 @@ const RoomList = ({rooms, me, btn_logout, all_users, rx_focusroom}) => {
       <List className={classes.list}>
         {rooms.length > 0 ? (
           rooms.map((room, index) => (
-            <RoomItem key={index} img="https://material-ui.com/static/images/avatar/1.jpg" room={room} all_users={all_users} event={rx_focusroom} />
+            <RoomItem key={index} img="https://material-ui.com/static/images/avatar/1.jpg" room={room} all_users={all_users} event={hendle_focusroom} />
           ))
         ) : (
           <li>리스트가없습니다.</li>
@@ -96,8 +99,9 @@ const mapDispatchToProps = (dispatch) => ({
   rx_focusroom: (val) => {
     dispatch(rx_focusroom(val));
   },
-
-  
+  rx_tabindex: (val) => {
+    dispatch(rx_tabindex(val));
+  },
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(RoomList);
