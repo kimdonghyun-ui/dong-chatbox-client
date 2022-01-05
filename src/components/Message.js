@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 // import { rx_remove } from "../modules/chats";
 // import { fireauth } from "../services/firebase";
 
-// import * as dateFns from "date-fns";
+import * as dateFns from "date-fns";
 import { cm_removeChat } from "../helpers/common";
 import ListSubheader from "@material-ui/core/ListSubheader";
 
@@ -201,7 +201,7 @@ const Message = ({ msgs, me, btn_logout, focusroom, all_rooms }) => {
                         {data.message}
                       </Typography>
                       <br />
-                      {/* {dateFns.format(data.timestamp, "yyyy-MM-dd HH:mm:ss")} */}
+                      {dateFns.format(data.timestamp, "yyyy-MM-dd HH:mm:ss")}
                     </React.Fragment>
                   }
                 />

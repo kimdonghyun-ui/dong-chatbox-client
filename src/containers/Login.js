@@ -1,14 +1,15 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import { makeStyles } from "@material-ui/core/styles";
-import { cm_login } from "../helpers/common";
-import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
-// import axios from "axios";
-// import { setCookie } from "../cookie";
 
+/* redux */
 import { connect } from "react-redux";
-
 import { rx_authenticated, rx_big_loading, rx_me } from "../modules/chats";
+
+/* router */
+import { Link } from "react-router-dom";
+
+/* material-ui */
+import { makeStyles } from "@material-ui/core/styles";
+import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import {
   Avatar,
   Button,
@@ -19,6 +20,10 @@ import {
   CssBaseline,
   Container,
 } from "@material-ui/core";
+
+/* function */
+import { cm_login } from "../helpers/common";
+
 
 function Copyright() {
   return (
@@ -55,21 +60,11 @@ const useStyles = makeStyles((theme) => ({
 
 function Login({ rx_authenticated, rx_big_loading, rx_me }) {
   const classes = useStyles();
+
   const [member, setMember] = useState({
     email: "",
     password: "",
   });
-
-
-
-
-
-
-
-
-
-
-
 
   const handleOnChange = (e) => {
     const { name, value } = e.target;
@@ -82,10 +77,6 @@ function Login({ rx_authenticated, rx_big_loading, rx_me }) {
       cm_login(member,rx_authenticated,rx_big_loading,rx_me);
     }
   };
-
-
-
-
 
   return (
     <Container component="main" maxWidth="xs">
@@ -135,7 +126,7 @@ function Login({ rx_authenticated, rx_big_loading, rx_me }) {
             color="primary"
             className={classes.submit}
           >
-            Sign In
+            로그인
           </Button>
 
           <Grid container>

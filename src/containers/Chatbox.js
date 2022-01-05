@@ -1,40 +1,45 @@
 import React,{ useEffect, useState } from "react";
+
+/* redux */
 import { connect } from "react-redux";
+import { rx_all_users, rx_all_rooms, rx_authenticated, rx_focusroom } from "../modules/chats";
+
+/* material-ui */
+import { CssBaseline } from "@material-ui/core";
+
+/* function */
+import { socket, cm_all_users, cm_all_rooms, cm_logout } from "../helpers/common";
+
+/* components */
+import TabBox from "../components/TabBox";
 import FrienList from "../components/FrienList";
 import RoomList from "../components/RoomList";
-import io from "socket.io-client";
-
-import { cm_all_users, cm_all_room, cm_logout } from "../helpers/common";
-import { rx_all_users, rx_all_rooms, rx_authenticated, rx_focusroom } from "../modules/chats";
-import {
-  CssBaseline,
-} from "@material-ui/core";
-import TabBox from "../components/TabBox";
-
 import Message from "../components/Message";
 import InputBox from "../components/InputBox";
+
+
 
 function Chatbox({ rx_all_users, all_users, rx_all_rooms, all_rooms, me, rx_authenticated, rx_focusroom, focusroom }) {
   const [count, setCount] = useState(0);
 
-  const hendle_logout = () => cm_logout(rx_authenticated,me,rx_all_users,all_users);
-
-  
-  // const socket = io.connect("http://localhost:4001");
-  const socket = io.connect("https://dong-chatbox-server.herokuapp.com");
+  /* hendle_logout(로그아웃 버튼) */
+  const hendle_logout = () => cm_logout(rx_authenticated,me);
 
   useEffect(() => {
-    cm_all_room(socket);
-    cm_all_users(socket);
+
+    cm_all_users(); //api에 users 데이터 요청 후 성공시 소켓에 전달 (user_update로 되돌려받는다.)
     socket.on('user_update', function(user) {
       rx_all_users(user);
     });
+
+
+    cm_all_rooms(); //api에 rooms 데이터 요청 후 성공시 소켓에 전달 (room_update로 되돌려받는다.)
     socket.on('room_update', function(room) {
       rx_all_rooms(room);
     });
   // eslint-disable-next-line react-hooks/exhaustive-deps
   },[]);
-  // cm_logout(rx_authenticated,me,rx_all_users,all_users);
+ 
 
   useEffect(() => {
     console.log('#####all_rooms',focusroom)

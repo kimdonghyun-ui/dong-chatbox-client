@@ -1,9 +1,15 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import { cm_signUp } from "../helpers/common";
-import { makeStyles } from "@material-ui/core/styles";
-import { connect } from "react-redux";
 
+/* router */
+import { Link } from "react-router-dom";
+
+/* redux */
+import { connect } from "react-redux";
+import { rx_authenticated, rx_big_loading, rx_me } from "../modules/chats";
+
+/* material-ui */
+import { makeStyles } from "@material-ui/core/styles";
+import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import {
   Avatar,
   Button,
@@ -15,8 +21,8 @@ import {
   Container,
 } from "@material-ui/core";
 
-import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
-import { rx_authenticated, rx_big_loading, rx_me } from "../modules/chats";
+/* function */
+import { cm_signUp } from "../helpers/common";
 
 function Copyright() {
   return (
@@ -149,7 +155,6 @@ function SignUp({ rx_authenticated, rx_big_loading, rx_me }) {
     </Container>
   );
 }
-
 
 const mapDispatchToProps = (dispatch) => ({
   rx_authenticated: (val) => {

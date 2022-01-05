@@ -4,11 +4,11 @@ import axios from "axios";
 
 
 import io from "socket.io-client";
-// const socket = io.connect("http://localhost:4001");
-const socket = io.connect("https://dong-chatbox-server.herokuapp.com");
+export const socket = io.connect("http://localhost:4001");
+// export const socket = io.connect("https://dong-chatbox-server.herokuapp.com");
 
-// const api_url = "http://localhost:1337/";
-const api_url = "https://dongdong-api.herokuapp.com/";
+const api_url = "http://localhost:1337/";
+// const api_url = "https://dongdong-api.herokuapp.com/";
 
 
 
@@ -115,22 +115,7 @@ export const cm_login = async (member,rx_authenticated,rx_big_loading,rx_me) => 
 //##########################################################
 
 
-//##########################################################
-//########### 유저리스트 ################
-//##########################################################
-export const cm_all_users = async (socket) => {
-  // rx_big_loading(true);
-  try {
-    const { data } = await axios.get(api_url+'api/users');
-    // console.log(data);
-    // rx_all_users(data);
-    socket.emit('all_users', data);
-  } catch (e) {
-    console.log('유저리스트 실패');
-  }
-  // rx_big_loading(false);
-}
-//##########################################################
+
 
 
 
@@ -141,10 +126,15 @@ export const cm_all_users = async (socket) => {
 //##########################################################
 //########### 로그아웃 ################
 //##########################################################
-export const cm_logout = (rx_authenticated,me,rx_all_users,all_users) => {
-  delCookie('me');
+export const cm_logout = (rx_authenticated,me) => {
+  /*쿠키에 저장한 myToken,me를 제거 */
   delCookie('myToken');
+  delCookie('me');
+  
+  /* authenticated 값을 false로해 로그아웃상태로 인지시켜줌 */
   rx_authenticated(false);
+
+  /* 나의 접속상태 값 false */
   cm_contact(me.id,false);
 }
 //##########################################################
@@ -156,20 +146,33 @@ export const cm_logout = (rx_authenticated,me,rx_all_users,all_users) => {
 
 
 
-
+//##########################################################
+//########### 유저리스트 ################
+//##########################################################
+export const cm_all_users = async () => {
+  // rx_big_loading(true);
+  try {
+    const { data } = await axios.get(api_url+'api/users');
+    console.log('cm_all_users성공 소켓에 알리기',data)
+    socket.emit('all_users', data);
+  } catch (e) {
+    console.log('유저리스트 실패');
+  }
+  // rx_big_loading(false);
+}
+//##########################################################
 
 
 
 
 //##########################################################
-//########### 룸리스트 ################
+//########### 룸리스트 불러오기 ################
 //##########################################################
-export const cm_all_room = async (socket) => {
+export const cm_all_rooms = async () => {
   // rx_big_loading(true);
   try {
     const { data } = await axios.get(api_url+'api/rooms');
-    //console.log(data);
-    // rx_all_users(data);
+    console.log('cm_all_rooms성공 소켓에 알리기',data.data)
     socket.emit('all_rooms', data.data);
   } catch (e) {
     console.log('룸리스트 실패');
@@ -223,14 +226,12 @@ const roomadd = async (me,you,all_rooms) => {
 //##########################################################
 //########### 내 룸 개설 ################
 //##########################################################
-export function cm_roomadd(me, you, all_rooms, rx_focusroom, rx_tabindex) {
+export function cm_roomadd(me, you, all_rooms, rx_tabindex, rx_focusroom) {
   if(me === you){
     alert('자신과는 대화 할수 없습니다.');
     return
   }
   const data = [me, you].sort();
-  // const clone_data = [me.uid, you].sort();
-  console.log("handleFriend", data[0], data[1]);
 
   let clone_allroomlist = all_rooms.some(
     (element) =>
@@ -242,64 +243,19 @@ export function cm_roomadd(me, you, all_rooms, rx_focusroom, rx_tabindex) {
 
     //방이 없는경우 새방을 만들어준다.
     roomadd(data[0], data[1],all_rooms);
-    
+    rx_tabindex(2);
   } else {
     console.log("방이있어요");
-    //이미 방이 있는경우 포커스룸만 현재꺼로 채워준다.
-    // let clone_allroomlist2 = JSON.parse(JSON.stringify(allroomlist));
-    // clone_allroomlist2 = clone_allroomlist2.filter(
-    //   (item) => JSON.stringify(item.uid.sort()) === JSON.stringify(clone_data)
-    // )[0].msg_key;
 
-    // console.log("이미 방이 있습니다. 현재룸", clone_allroomlist2);
-    // rx_focusroom(clone_allroomlist2);
-  }
+    //all_rooms으로 가공을하면 원본을 훼손하기에 클론하고나서 가공해준다.
+    let clone_allroomlist2 = JSON.parse(JSON.stringify(all_rooms));
+    clone_allroomlist2 = clone_allroomlist2.filter(
+      (item) => JSON.stringify(item.attributes.roomuser.sort()) === JSON.stringify(data)
+    )[0].id;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  // console.log(allroomlist);
-  // let clone_allroomlist = JSON.parse(JSON.stringify(allroomlist));
-  // clone_allroomlist = clone_allroomlist.some(
-  //   (element) =>
-  //     JSON.stringify(element.uid.sort()) === JSON.stringify(clone_data)
-  // );
-
-  // rx_tabindex(2);
-  // if (!clone_allroomlist) {
-  //   //방이 없는경우 새방을 만들어준다.
-  //   var newPostKey = firedatabase.ref("room").push().key;
-  //   rx_focusroom(newPostKey);
-  //   var postData = {
-  //     uid: [me.uid, you],
-  //     name: [],
-  //     avatar: me.avatar,
-  //     msg_key: newPostKey,
-  //   };
-  //   var updates = {};
-  //   updates["/room/" + newPostKey] = postData;
-  //   return firedatabase.ref().update(updates);
-  // } else {
-  //   //이미 방이 있는경우 포커스룸만 현재꺼로 채워준다.
-  //   let clone_allroomlist2 = JSON.parse(JSON.stringify(allroomlist));
-  //   clone_allroomlist2 = clone_allroomlist2.filter(
-  //     (item) => JSON.stringify(item.uid.sort()) === JSON.stringify(clone_data)
-  //   )[0].msg_key;
-
-  //   console.log("이미 방이 있습니다. 현재룸", clone_allroomlist2);
-  //   rx_focusroom(clone_allroomlist2);
-  // }
+    rx_focusroom(clone_allroomlist2);
+    rx_tabindex(2);
+  };
 }
 //##########################################################
 
@@ -309,19 +265,18 @@ export function cm_roomadd(me, you, all_rooms, rx_focusroom, rx_tabindex) {
 
 
 //##########################################################
-//########### 룸리스트 ################
+//########### 룸 삭제 ################
 //##########################################################
 export const cm_removerooms = async (id,all_rooms) => {
-  console.log(id)
   // rx_big_loading(true);
   try {
     await axios.delete(api_url+'api/rooms/'+id);
     //console.log(data);
     // rx_all_users(data);
-    let hello = all_rooms.filter((item) => item.id !== id );
-    socket.emit('all_rooms', hello);
+    let remove = all_rooms.filter((item) => item.id !== id );
+    socket.emit('all_rooms', remove);
   } catch (e) {
-    console.log('룸삭제 실패');
+    console.log('룸 삭제 실패');
   }
   // rx_big_loading(false);
 }
