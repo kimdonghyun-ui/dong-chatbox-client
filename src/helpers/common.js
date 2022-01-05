@@ -290,15 +290,17 @@ export const cm_removerooms = async (id,all_rooms) => {
 //##########################################################
 export const cm_sendChat = async(room,focusroom,all_rooms) => {
   try {
-    const { data } = await axios.put(api_url+'api/rooms/'+focusroom, {
+    await axios.put(api_url+'api/rooms/'+focusroom, {
       "data":
         {
           "msglist":room
         }
       });
-      socket.emit('msgs', room);
+
+      
     console.log('#####cm_sendChat성공#####');
-    console.log('data',data);
+    socket.emit('msgs', room);
+    console.log('room',room);
     console.log('all_rooms', all_rooms);
     console.log('#####cm_sendChat성공#####');
 
