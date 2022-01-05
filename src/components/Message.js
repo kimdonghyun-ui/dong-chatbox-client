@@ -181,7 +181,8 @@ const Message = ({ msgs, me, btn_logout, focusroom }) => {
                         {data.message}
                       </Typography>
                       <br />
-                      {dateFns.format(data.timestamp, "yyyy-MM-dd HH:mm:ss")}
+                      {data.timestamp && dateFns.format(data.timestamp, "yyyy-MM-dd HH:mm:ss")}
+                      {/* {dateFns.format(data.timestamp, "yyyy-MM-dd HH:mm:ss")} */}
                     </React.Fragment>
                   }
                 />
