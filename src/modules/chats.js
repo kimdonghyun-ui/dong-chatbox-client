@@ -101,7 +101,8 @@ export const rx_msgbox = (result) => ({
           case RX_MSGBOX:
             return {
               ...state,
-              msgbox: action.result,
+              // msgbox: action.result,
+              msgbox: (action.result[0].length > 0 && action.result[1] > 0) ? action.result[0].filter((item) => item.id === action.result[1])[0].attributes.msglist : [],
           };
 
       default:

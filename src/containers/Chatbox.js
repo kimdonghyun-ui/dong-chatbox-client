@@ -42,20 +42,15 @@ function Chatbox({ rx_all_users, all_users, rx_all_rooms, all_rooms, me, rx_auth
       console.log('msgs_update',msg);
       msg && rx_msgbox(msg);
     });
-
+    
   // eslint-disable-next-line react-hooks/exhaustive-deps
   },[]);
- 
 
   useEffect(() => {
-    console.log('#####all_rooms',focusroom,all_rooms);
-    let new_msgs = (focusroom > 0 && all_rooms.length > 0 ) && all_rooms.filter((item) => item.id === focusroom)[0].attributes.msglist;
-    console.log("new_msgs123456",new_msgs)
-    socket.emit('msgs', new_msgs);
-    // const hello = (id) => all_rooms.filter((item,index) => item.id === id  ) 
-    // console.log(hello(focusroom))
-    // setCount(hello(focusroom))
-    console.log('#####all_rooms')
+
+    let new_msgs = [all_rooms,focusroom]
+    socket.emit('msgs',new_msgs);
+    console.log('msg',all_rooms,focusroom)
   // eslint-disable-next-line react-hooks/exhaustive-deps
   },[all_rooms,focusroom]);
 

@@ -19,7 +19,7 @@ import {
 
 import { makeStyles } from "@material-ui/core/styles";
 
-// import FriendAdd from "./FriendAdd";
+import FriendAdd from "./FriendAdd";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -139,7 +139,7 @@ const Message = ({ msgs, me, btn_logout, focusroom }) => {
         }}
       >
         채팅방
-        {/* {focusroom !== "" && <FriendAdd />} */}
+        {focusroom !== 0 && <FriendAdd />}
       </ListSubheader>
       <List className={classes.listBox} ref={intervalId}>
         {msgs.length > 0 ? (

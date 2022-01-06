@@ -194,7 +194,7 @@ export const cm_all_rooms = async () => {
 
 
 const roomadd = async (me,you,all_rooms) => {
-  console.log('시발'+me,you)
+  console.log(`me : ${me} / you : ${you}`);
   try {
     const { data } = await axios.post(api_url+'api/rooms/', {
       "data":
@@ -296,45 +296,14 @@ export const cm_sendChat = async(room,focusroom,all_rooms) => {
           "msglist":room
         }
       });
-
-      
-    console.log('#####cm_sendChat성공#####');
-    socket.emit('msgs', room);
-    console.log('room',room);
-    console.log('all_rooms', all_rooms);
-    console.log('#####cm_sendChat성공#####');
-
-    // rx_all_users(data);
-    // let hello = all_rooms.filter((item) => item.id !== id );
-    // socket.emit('all_rooms', hello);
+      socket.emit('msgs', room);
+      console.log(`room : ${room} / all_rooms : ${all_rooms}`);
+      console.log('#####cm_sendChat성공#####');
   } catch (e) {
-    console.log('#####cm_sendChat실패#####');
-    console.log('메시지 전송 실패',e);
-    console.log('room', room);
-    console.log('all_rooms', all_rooms);
+    console.log('에러 메시지',e);
+    console.log(`room : ${room} / all_rooms : ${all_rooms}`);
     console.log('#####cm_sendChat실패#####');
   }
-
-
-
-  // if (focusroom !== "") {
-  //   var newPostKey = firedatabase.ref(`msg/${focusroom}`).push().key;
-
-  //   var postData = {
-  //     message: msg.message,
-  //     timestamp: msg.timestamp,
-  //     uid: msg.uid,
-  //     avatar: msg.avatar,
-  //     key: newPostKey,
-  //     name: msg.name,
-  //   };
-
-  //   var updates = {};
-  //   updates[`msg/${focusroom}/${newPostKey}`] = postData;
-  //   return firedatabase.ref().update(updates);
-  // } else {
-  //   alert("방을 선택해주세요");
-  // }
 } //cm_sendChat
 //##########################################################
 
@@ -351,15 +320,59 @@ export const cm_removeChat = async (focusroom,hello) => {
         }
       });
       socket.emit('msgs', hello);
-
+    console.log(`msgs : ${hello}`);
     console.log('#####cm_removeChat성공#####');
-    console.log(hello);
-    console.log('#####cm_removeChat성공#####');
-
   } catch (e) {
-    console.log('#####cm_removeChat실패#####');
-    console.log(hello);
+    console.log(`msgs : ${hello}`);
     console.log('#####cm_removeChat실패#####');
   }
 }
 //##########################################################
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//##########################################################
+//########### 룸에 친구추가 ################
+//##########################################################
+export const cm_roomfriend = async(data,focusroom,all_rooms) => {
+
+  
+
+  let dd  = all_rooms.filter((item) => item.id === focusroom)[0].attributes.roomuser;
+  console.log(dd)
+
+
+  try {
+    await axios.put(api_url+'api/rooms/'+focusroom, {
+      "data":
+        {
+          "roomuser":data
+        }
+      });
+      socket.emit('all_rooms', all_rooms);
+      console.log('#####cm_roomfriend성공#####');
+
+
+      
+  } catch (e) {
+    console.log('에러 메시지',e);
+    console.log('#####cm_roomfriend실패#####');
+  }
+} //cm_sendChat
+//##########################################################
+// let gogogo = all_rooms.filter((item) => item.id === focusroom)[0].attributes.roomuser;
