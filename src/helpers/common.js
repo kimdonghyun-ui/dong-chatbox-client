@@ -5,8 +5,8 @@ import axios from "axios";
 
 import io from "socket.io-client";
 import { Title } from "@material-ui/icons";
-export const socket = io.connect("http://localhost:4001");
-// export const socket = io.connect("https://dong-chatbox-server.herokuapp.com");
+// export const socket = io.connect("http://localhost:4001");
+export const socket = io.connect("https://dong-chatbox-server.herokuapp.com");
 
 // const api_url = "http://localhost:1337/";
 const api_url = "https://dongdong-api.herokuapp.com/";
