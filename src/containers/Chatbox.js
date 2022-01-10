@@ -26,7 +26,7 @@ function Chatbox({ rx_all_users, all_users, rx_all_rooms, all_rooms, me, rx_auth
 
   useEffect(() => {
 
-    cm_all_users(rx_loading2); //api에 users 데이터 요청 후 성공시 소켓에 전달 (user_update로 되돌려받는다.)
+    cm_all_users(); //api에 users 데이터 요청 후 성공시 소켓에 전달 (user_update로 되돌려받는다.)
     socket.on('user_update', function(user) {
       rx_all_users(user); //소켓에 연결된 모든 사용자에게 유저 데이터를 갱신해준다.
     });

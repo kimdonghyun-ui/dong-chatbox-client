@@ -6,7 +6,7 @@ import SendIcon from "@material-ui/icons/Send";
 import { Box, Button, TextField } from "@material-ui/core";
 
 /* function */
-import { socket, cm_setmsg } from "../helpers/common";
+import { cm_setmsg } from "../helpers/common";
 
 const useStyles = makeStyles((theme) => ({
   InputBox: {
@@ -33,14 +33,18 @@ const InputBox = ({ all_msgs ,focusroom, me, rx_all_rooms, all_rooms,  }) => {
   const [msgs, setMsg] = useState({
     Room: focusroom,
     NickName: me.username,
+    me_id: me.id,
     Input: '',
+    timestamp: Date.now(),
   });
 
   const handleOnChange = (e) => {
     setMsg({
       Room: focusroom,
       NickName: me.username,
+      me_id: me.id,
       Input: e.target.value,
+      timestamp: Date.now(),
     });
   };
 

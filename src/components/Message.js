@@ -114,18 +114,21 @@ const Message = ({ msgs, me, btn_logout, focusroom }) => {
     console.log('메시지 삭제',data);
     cm_removeChat(focusroom,data);
   };
-  const filter_data = (data) => data.filter((item) => item.attributes.name === focusroom )[0].attributes.list;
+  
+  // const filter_data = (data) => data.length > 0 ? data.filter((item) => item.attributes.name === focusroom )[0].attributes.list : [] ;
+  const filter_data = (data) => data.filter((item) => item.attributes.name === focusroom )
 
   useEffect(() => {
-    console.log("[표시]Message.js",filter_data(msgs))
-    setData(filter_data(msgs));
+    console.log('샬랴라랄라',msgs)
+    console.log("[표시]Message.js",filter_data(msgs).length > 0 ? filter_data(msgs)[0].attributes.list : [])
+    setData(filter_data(msgs).length > 0 ? filter_data(msgs)[0].attributes.list : []);
     // console.log("[표시]Message.js",msgbox.filter((item) => item.attributes.name === focusroom ));
     console.log('datas',datas);
 
     scrollToMyRef();
-    return () => {
-      setData([]);
-    };
+    // return () => {
+    //   setData([]);
+    // };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [msgs]);
 
@@ -181,18 +184,18 @@ const Message = ({ msgs, me, btn_logout, focusroom }) => {
                 style={{
                   display: "flex",
                   flexDirection:
-                    me.id === data.userid
+                    me.id === data.me_id
                       ? "row-reverse"
                       : "row",
                   textAlign:
-                  me.id === data.userid ? "right" : "left",
+                  me.id === data.me_id ? "right" : "left",
                 }}
               >
                 <ListItemAvatar
                   className={classes.listBoxItemavatar}
                   style={{
                     justifyContent:
-                        me.id === data.userid
+                        me.id === data.me_id
                         ? "flex-end"
                         : "flex-start",
                   }}
@@ -201,7 +204,7 @@ const Message = ({ msgs, me, btn_logout, focusroom }) => {
                 </ListItemAvatar>
 
                 <ListItemText
-                  primary={data.name}
+                  primary={data.NickName}
                   secondary={
                     <React.Fragment>
                       <Typography
@@ -221,7 +224,7 @@ const Message = ({ msgs, me, btn_logout, focusroom }) => {
                 <Button
                   style={{
                     display:
-                        me.id !== data.userid
+                        me.id !== data.me_id
                         ? "none"
                         : "inline-flex",
                   }}

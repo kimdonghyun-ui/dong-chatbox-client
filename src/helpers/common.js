@@ -4,7 +4,7 @@ import axios from "axios";
 
 
 import io from "socket.io-client";
-import { Title } from "@material-ui/icons";
+// import { Title } from "@material-ui/icons";
 // export const socket = io.connect("http://localhost:4001");
 export const socket = io.connect("https://dong-chatbox-server.herokuapp.com");
 
@@ -150,8 +150,8 @@ export const cm_logout = (rx_authenticated,me) => {
 //##########################################################
 //########### 유저리스트 ################
 //##########################################################
-export const cm_all_users = async (rx_loading2) => {
-  rx_loading2(true);
+export const cm_all_users = async () => {
+  // rx_loading2(true);
   try {
     const { data } = await axios.get(api_url+'api/users');
     console.log('cm_all_users성공 소켓에 알리기',data)
@@ -159,7 +159,7 @@ export const cm_all_users = async (rx_loading2) => {
   } catch (e) {
     console.log('유저리스트 실패');
   }
-  rx_loading2(false);
+  // rx_loading2(false);
 }
 //##########################################################
 
@@ -413,9 +413,17 @@ export const cm_setmsg = async (msg,all_msgs,focusroom) => {
   console.log('all_msgs',all_msgs);
   let clone_all_msgs = all_msgs;
   let m_id = clone_all_msgs.filter((item) => item.attributes.name === focusroom );
-  m_id[0].attributes.list.push(msg)
-  console.log('all_msgs_list',m_id[0].attributes.list);
-  console.log('all_msgs_id',m_id[0].id);
+  // m_id.length > 0 ? m_id[0].attributes.list.push(msg) : [];
+  // m_id[0].attributes.list.push(msg);
+
+if(m_id.length > 0){
+  m_id[0].attributes.list.push(msg);
+}else{
+  return
+}
+
+  console.log('all_msgs_list',m_id);
+  console.log('all_msgs_id',m_id.id);
 
 
 
