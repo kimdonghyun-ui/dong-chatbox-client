@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 
 /* redux */
 import { connect } from "react-redux";
-import { rx_authenticated, rx_big_loading, rx_me } from "../modules/chats";
+import { rx_authenticated, rx_loading1, rx_me } from "../modules/chats";
 
 /* material-ui */
 import { makeStyles } from "@material-ui/core/styles";
@@ -57,7 +57,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function SignUp({ rx_authenticated, rx_big_loading, rx_me }) {
+function SignUp({ rx_authenticated, rx_loading1, rx_me }) {
   const classes = useStyles();
   const [member, setMember] = useState({
     email: "",
@@ -73,7 +73,7 @@ function SignUp({ rx_authenticated, rx_big_loading, rx_me }) {
   const handleOnSubmit = async (e) => {
     e.preventDefault();
     if (member.email !== "" && member.password !== "" && member.name !== "") {
-      cm_signUp(member,rx_authenticated,rx_big_loading,rx_me);
+      cm_signUp(member,rx_authenticated,rx_loading1,rx_me);
     }
   };
 
@@ -160,8 +160,8 @@ const mapDispatchToProps = (dispatch) => ({
   rx_authenticated: (val) => {
     dispatch(rx_authenticated(val));
   },
-  rx_big_loading: (val) => {
-    dispatch(rx_big_loading(val));
+  rx_loading1: (val) => {
+    dispatch(rx_loading1(val));
   },
   rx_me: (val) => {
     dispatch(rx_me(val));

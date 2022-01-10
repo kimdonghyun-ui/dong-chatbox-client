@@ -1,18 +1,22 @@
 import React from "react";
-import { withStyles } from "@material-ui/core/styles";
-import Badge from "@material-ui/core/Badge";
-import { cm_removerooms } from "../helpers/common";
-import { connect } from "react-redux";
-// import { fireauth } from "../services/firebase";
 
-// import { rx_focusroom, rx_focusmsg } from "../modules/chats";
+/* redux */
+import { connect } from "react-redux";
+
+/* material-ui */
+import { withStyles } from "@material-ui/core/styles";
 import {
   ListItem,
   ListItemText,
   ListItemAvatar,
   Avatar,
   Button,
+  Badge
 } from "@material-ui/core";
+
+/* function */
+import { cm_removerooms } from "../helpers/common";
+
 
 const StyledBadge = withStyles((theme) => ({
   badge: {
@@ -50,8 +54,6 @@ const RoomItem = ({
   all_rooms,
   event
 }) => {
-console.log('room',room)
-console.log('all_users',all_users)
 
 
 //인자값으로 들어온 id를 가진 유저데이터를 찾아서 이름을 꺼내기
@@ -62,8 +64,6 @@ function id_name(names) {
     all_users.filter((data) => data.id === names)[0].username
   );
 }
-
-
 
   return (
     <li style={{ display: "flex" }}>
@@ -91,25 +91,19 @@ function id_name(names) {
                           : id_name(room.attributes.roomuser)
         } secondary="1:1대화방" />
       </ListItem>
-      {true && (
-        <Button
-          onClick={() =>
-            // CM_removeRooms(msg_key, me, rx_focusroom, rx_focusmsg, all_users)
-            cm_removerooms(room.id,all_rooms)
-            // console.log('삭제')
-          }
-        >
-          삭제
-        </Button>
-      )}
+      <Button
+        onClick={() =>
+          cm_removerooms(room.id,all_rooms)
+        }
+      >
+        삭제
+      </Button>
     </li>
   );
 };
 
 const mapStateToProps = (state) => ({
   all_rooms: state.chats.all_rooms,
-  // msglength: state.chats.msglength,
-  // msglength2: state.chats.msglength2,
 });
 
 // const mapDispatchToProps = (dispatch) => ({

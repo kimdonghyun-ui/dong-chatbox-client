@@ -1,17 +1,13 @@
 import React from "react";
+
+/* material-ui */
 import { withStyles } from "@material-ui/core/styles";
 import Badge from "@material-ui/core/Badge";
-// import { CM_removeRooms } from "../helpers/common";
-import { connect } from "react-redux";
-// import { fireauth } from "../services/firebase";
-
-// import { rx_focusroom, rx_focusmsg } from "../modules/chats";
 import {
   ListItem,
   ListItemText,
   ListItemAvatar,
   Avatar,
-  Button,
 } from "@material-ui/core";
 
 const StyledBadge = withStyles((theme) => ({
@@ -73,32 +69,8 @@ const FriendItem = ({
         </ListItemAvatar>
         <ListItemText primary={text} secondary={sub} />
       </ListItem>
-      {false && (
-        <Button
-          onClick={() =>
-            alert('a')
-          }
-        >
-          삭제
-        </Button>
-      )}
     </li>
   );
 };
 
-// const mapStateToProps = (state) => ({
-//   all_users: state.chats.all_users,
-//   msglength: state.chats.msglength,
-//   msglength2: state.chats.msglength2,
-// });
-
-// const mapDispatchToProps = (dispatch) => ({
-//   rx_focusroom: (val) => {
-//     dispatch(rx_focusroom(val));
-//   },
-//   rx_focusmsg: (val) => {
-//     dispatch(rx_focusmsg(val));
-//   },
-// });
-
-export default connect(null, null)(FriendItem);
+export default FriendItem;

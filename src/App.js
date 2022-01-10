@@ -11,7 +11,7 @@ import { rx_authenticated, rx_me } from "./modules/chats";
 import { getCookie } from "./cookie";
 
 /* material-ui */
-import { CircularProgress, Box } from "@material-ui/core";
+// import { CircularProgress, Box } from "@material-ui/core";
 
 /* components */
 import PublicRoute from "./components/PublicRoute";
@@ -19,10 +19,10 @@ import PrivateRoute from "./components/PrivateRoute";
 import SignUp from "./containers/SignUp";
 import Login from "./containers/Login";
 import Chatbox from "./containers/Chatbox";
+// import Gogogo from './gogogo/Gogogo';
+import LoadingBar from './components/LoadingBar';
 
-
-
-function App({rx_authenticated, authenticated, big_loading, rx_me}) {
+function App({rx_authenticated, authenticated, loading1, rx_me}) {
 
   useEffect(() => {
     console.log('[app.js]입니다.');
@@ -41,23 +41,13 @@ function App({rx_authenticated, authenticated, big_loading, rx_me}) {
   
   return (
     <HashRouter>
-      {big_loading ? (
-          <Box
-          style={{
-            position: "absolute",
-            top: "0",
-            left: "0",
-            width: "100%",
-            height: "100%",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <CircularProgress color="secondary" />
-        </Box>
-      ):(
+      <LoadingBar open={loading1}>
         <Switch>
+          {/* <PublicRoute
+            path={["/", "/login"]}
+            authenticated={authenticated}
+            component={Gogogo}
+          /> */}
           <PrivateRoute
             path="/chat"
             authenticated={authenticated}
@@ -74,14 +64,14 @@ function App({rx_authenticated, authenticated, big_loading, rx_me}) {
             component={Login}
           />
         </Switch>
-      )}
+      </LoadingBar>
     </HashRouter>
   );
 }
 
 const mapStateToProps = (state) => ({
   authenticated: state.chats.authenticated,
-  big_loading: state.chats.big_loading
+  loading1: state.chats.loading1
 });
 
 const mapDispatchToProps = (dispatch) => ({

@@ -1,10 +1,11 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { connect } from "react-redux";
 
 
 import * as dateFns from "date-fns";
 import { cm_removeChat } from "../helpers/common";
-import ListSubheader from "@material-ui/core/ListSubheader";
+import {ListSubheader, Snackbar} from "@material-ui/core";
+import { socket } from "../helpers/common";
 
 import {
   Box,
@@ -24,13 +25,6 @@ import FriendAdd from "./FriendAdd";
 const useStyles = makeStyles((theme) => ({
   root: {
     paddingTop:'26px',
-
-    // position: 'absolute',
-    // top: '50px',
-    // bottom: '72px',
-    // left: '24px',
-    // right: '25px',
-    // overflowY: "scroll",
   },
   lBox: {
     flexDirection: "row-reverse",
@@ -92,7 +86,17 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Message = ({ msgs, me, btn_logout, focusroom }) => {
-  // const [count, setCount] = useState(0);
+  const [open, setOpen] = useState(false);
+  const [alertmsg, setAlertmsg] = useState('');
+  const handleClose = (event, reason) => {
+    setOpen(false);
+  };
+
+
+
+
+
+  const [datas, setData] = useState([]);
 
   const classes = useStyles();
 
@@ -110,15 +114,43 @@ const Message = ({ msgs, me, btn_logout, focusroom }) => {
     console.log('메시지 삭제',data);
     cm_removeChat(focusroom,data);
   };
+  const filter_data = (data) => data.filter((item) => item.attributes.name === focusroom )[0].attributes.list;
+
+  useEffect(() => {
+    console.log("[표시]Message.js",filter_data(msgs))
+    setData(filter_data(msgs));
+    // console.log("[표시]Message.js",msgbox.filter((item) => item.attributes.name === focusroom ));
+    console.log('datas',datas);
+
+    scrollToMyRef();
+    return () => {
+      setData([]);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [msgs]);
 
 
   useEffect(() => {
-    console.log('#####Message')
-    console.log("[표시]Message.js");
-    scrollToMyRef();
-    console.log('#####Message')
+
+    socket.on('joinMsg',(data) => {
+      setOpen(true);
+      setAlertmsg(`${data.NickName}님이 ${data.Room}방에 입장하셨습니다.`);
+    })
+    socket.on('leaveMsg',(data) => {
+      setOpen(true);
+      setAlertmsg(`${data.NickName}님이 ${data.Room}방에 퇴장하셨습니다.`);
+    })
+
+    return () => {
+      socket.emit('leaveRoom',{
+        Room: focusroom,
+        NickName: me.username
+      });
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [msgs]);
+    }, []);
+
+
 
   return (
     <Box
@@ -142,8 +174,8 @@ const Message = ({ msgs, me, btn_logout, focusroom }) => {
         {focusroom !== 0 && <FriendAdd />}
       </ListSubheader>
       <List className={classes.listBox} ref={intervalId}>
-        {msgs.length > 0 ? (
-          msgs.map((data, index) => (
+        {datas.length > 0 ? (
+          datas.map((data, index) => (
             <ListItem key={index} className={classes.listBoxItem}>
               <Box
                 style={{
@@ -178,7 +210,7 @@ const Message = ({ msgs, me, btn_logout, focusroom }) => {
                         color="textPrimary"
                         style={{ wordBreak: "break-all" }}
                       >
-                        {data.message}
+                        {data.Input}
                       </Typography>
                       <br />
                       {data.timestamp && dateFns.format(data.timestamp, "yyyy-MM-dd HH:mm:ss")}
@@ -204,12 +236,24 @@ const Message = ({ msgs, me, btn_logout, focusroom }) => {
           <li>리스트가없습니다.</li>
         )}
       </List>
+
+      <Snackbar
+        anchorOrigin={{vertical: 'top', horizontal: 'center'}}
+        open={open}
+        onClose={handleClose}
+        autoHideDuration={2000}
+        message={alertmsg}
+        key={"top center"}
+      />
+
+
     </Box>
   );
 };
 
 const mapStateToProps = (state) => ({
   focusroom: state.chats.focusroom,
+  // msgbox: state.chats.msgbox
 });
 
 // const mapDispatchToProps = (dispatch) => ({

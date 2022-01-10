@@ -1,16 +1,19 @@
 import React, { useEffect } from "react";
 
-import { makeStyles } from "@material-ui/core/styles";
-import ListSubheader from "@material-ui/core/ListSubheader";
+/* redux */
 import { connect } from "react-redux";
 import { rx_authenticated, rx_all_users, rx_all_rooms, rx_tabindex, rx_focusroom } from "../modules/chats";
+
+/* material-ui */
+import { makeStyles } from "@material-ui/core/styles";
+import { Box, List, Button, ListSubheader } from "@material-ui/core";
+
+/* function */
 import { cm_roomadd } from "../helpers/common";
 
+/* components */
 import FriendItem from "./FriendItem";
-// import { delCookie } from "../cookie";
-
-import { Box, List, Button } from "@material-ui/core";
-
+import LoadingBar from "./LoadingBar";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -49,10 +52,9 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const FrienList = ({users, me, btn_logout, all_rooms, rx_all_rooms, rx_tabindex, rx_focusroom}) => {
+const FrienList = ({users, me, btn_logout, all_rooms, rx_tabindex, rx_focusroom, loading2}) => {
   const classes = useStyles();
   const handleFriend = (you) => {
-    // cm_roomadd(me, you, allroomlist, rx_focusroom, rx_tabindex);
     cm_roomadd(me.id, you, all_rooms, rx_tabindex, rx_focusroom);
   };
 
@@ -63,33 +65,37 @@ const FrienList = ({users, me, btn_logout, all_rooms, rx_all_rooms, rx_tabindex,
   }, []);
 
   return (
-    <Box className={classes.root}>
-      <div  className={classes.title}>
-        {me.username}
-        <Button onClick={() => {
-            btn_logout();
-          }}>로그아웃</Button>
-      </div>
-      <ListSubheader component="div">전체 친구 리스트</ListSubheader>
+    <LoadingBar open={loading2}>
+      <Box className={classes.root}>
+        <div  className={classes.title}>
+          {me.username}
+          <Button onClick={() => {
+              btn_logout();
+            }}>로그아웃</Button>
+        </div>
 
-      <List className={classes.list}>
-        {users.length > 0 ? (
-          users.map((user, index) => (
-            <FriendItem key={index} img="https://material-ui.com/static/images/avatar/1.jpg" text={user.username} sub={user.email} id={user.id} confirmed={user.confirmed} event={handleFriend} />
-          ))
-        ) : (
-          <li>리스트가없습니다.</li>
-        )}
-      </List>
+        <ListSubheader component="div">전체 친구 리스트</ListSubheader>
 
-    </Box>
+        <List className={classes.list}>
+          {users.length > 0 ? (
+            users.map((user, index) => (
+              <FriendItem key={index} img="https://material-ui.com/static/images/avatar/1.jpg" text={user.username} sub={user.email} id={user.id} confirmed={user.confirmed} event={handleFriend} />
+            ))
+          ) : (
+            <li>리스트가없습니다.</li>
+          )}
+        </List>
+      </Box>
+    </LoadingBar>
+
   );
 };
 
 const mapStateToProps = (state) => ({
   all_users: state.chats.all_users,
   all_rooms: state.chats.all_rooms,
-  me: state.chats.me
+  me: state.chats.me,
+  loading2: state.chats.loading2
 });
 
 const mapDispatchToProps = (dispatch) => ({

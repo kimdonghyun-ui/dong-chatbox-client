@@ -1,14 +1,19 @@
 import React, { useEffect } from "react";
 
-import { makeStyles } from "@material-ui/core/styles";
-import ListSubheader from "@material-ui/core/ListSubheader";
+/* redux */
 import { connect } from "react-redux";
 import { rx_authenticated, rx_all_users, rx_focusroom, rx_tabindex } from "../modules/chats";
 
-import RoomItem from "./RoomItem";
-// import { delCookie } from "../cookie";
+/* material-ui */
+import { makeStyles } from "@material-ui/core/styles";
+import { Box, List, Button, ListSubheader } from "@material-ui/core";
 
-import { Box, List, Button } from "@material-ui/core";
+/* function */
+import { socket } from "../helpers/common";
+
+/* components */
+import RoomItem from "./RoomItem";
+import LoadingBar from "./LoadingBar";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -48,12 +53,18 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const RoomList = ({rooms, me, btn_logout, all_users, rx_focusroom, rx_tabindex}) => {
+const RoomList = ({rooms, me, btn_logout, all_users, rx_focusroom, rx_tabindex, loading3}) => {
   const classes = useStyles();
 
   const hendle_focusroom = (i) => {
     rx_tabindex(2);
     rx_focusroom(i);
+    console.log('방버튼')
+    socket.emit('joinRoom',{
+      Room: i,
+      NickName: me.username
+    });
+
   }
 
   useEffect(() => {
@@ -62,31 +73,34 @@ const RoomList = ({rooms, me, btn_logout, all_users, rx_focusroom, rx_tabindex})
   }, []);
 
   return (
-    <Box className={classes.root}>
-      <div  className={classes.title}>
-        {me.username}
-        <Button onClick={() => {
-            btn_logout();
-          }}>로그아웃</Button>
-      </div>
-      <ListSubheader component="div">전체 친구 리스트</ListSubheader>
+    <LoadingBar open={loading3}>
+      <Box className={classes.root}>
+        <div  className={classes.title}>
+          {me.username}
+          <Button onClick={() => {
+              btn_logout();
+            }}>로그아웃</Button>
+        </div>
+        <ListSubheader component="div">전체 친구 리스트</ListSubheader>
 
-      <List className={classes.list}>
-        {rooms.length > 0 ? (
-          rooms.map((room, index) => (
-            <RoomItem key={index} img="https://material-ui.com/static/images/avatar/1.jpg" room={room} all_users={all_users} event={hendle_focusroom} />
-          ))
-        ) : (
-          <li>리스트가없습니다.</li>
-        )}
-      </List>
-
-    </Box>
+        <List className={classes.list}>
+          {rooms.length > 0 ? (
+            rooms.map((room, index) => (
+              <RoomItem key={index} img="https://material-ui.com/static/images/avatar/1.jpg" room={room} all_users={all_users} event={hendle_focusroom} />
+            ))
+          ) : (
+            <li>리스트가없습니다.</li>
+          )}
+        </List>
+      </Box>
+    </LoadingBar>
   );
 };
 
 const mapStateToProps = (state) => ({
   all_users: state.chats.all_users,
+  me: state.chats.me,
+  loading3: state.chats.loading3
 });
 
 const mapDispatchToProps = (dispatch) => ({

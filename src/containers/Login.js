@@ -2,7 +2,7 @@ import React, { useState } from "react";
 
 /* redux */
 import { connect } from "react-redux";
-import { rx_authenticated, rx_big_loading, rx_me } from "../modules/chats";
+import { rx_authenticated, rx_loading1, rx_me } from "../modules/chats";
 
 /* router */
 import { Link } from "react-router-dom";
@@ -58,7 +58,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function Login({ rx_authenticated, rx_big_loading, rx_me }) {
+function Login({ rx_authenticated, rx_loading1, rx_me }) {
   const classes = useStyles();
 
   const [member, setMember] = useState({
@@ -74,7 +74,7 @@ function Login({ rx_authenticated, rx_big_loading, rx_me }) {
   const handleOnSubmit = async (e) => {
     e.preventDefault();
     if (member.email !== "" && member.password !== "") {
-      cm_login(member,rx_authenticated,rx_big_loading,rx_me);
+      cm_login(member,rx_authenticated,rx_loading1,rx_me);
     }
   };
 
@@ -150,16 +150,12 @@ function Login({ rx_authenticated, rx_big_loading, rx_me }) {
   );
 }
 
-// const mapStateToProps = (state) => ({
-//   authenticated: state.chats.authenticated,
-// });
-
 const mapDispatchToProps = (dispatch) => ({
   rx_authenticated: (val) => {
     dispatch(rx_authenticated(val));
   },
-  rx_big_loading: (val) => {
-    dispatch(rx_big_loading(val));
+  rx_loading1: (val) => {
+    dispatch(rx_loading1(val));
   },
   rx_me: (val) => {
     dispatch(rx_me(val));
