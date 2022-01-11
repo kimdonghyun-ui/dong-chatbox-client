@@ -5,7 +5,7 @@ import { connect } from "react-redux";
 import * as dateFns from "date-fns";
 import { cm_removeChat } from "../helpers/common";
 import {ListSubheader, Snackbar} from "@material-ui/core";
-import { socket } from "../helpers/common";
+// import { socket } from "../helpers/common";
 
 import {
   Box,
@@ -115,41 +115,17 @@ const Message = ({ msgs, me, btn_logout, focusroom }) => {
     cm_removeChat(focusroom,data);
   };
   
-  // const filter_data = (data) => data.length > 0 ? data.filter((item) => item.attributes.name === focusroom )[0].attributes.list : [] ;
-  const filter_data = (data) => data.filter((item) => item.attributes.name === focusroom )
 
   useEffect(() => {
-    console.log('샬랴라랄라',msgs)
-    console.log("[표시]Message.js",filter_data(msgs).length > 0 ? filter_data(msgs)[0].attributes.list : [])
-    setData(filter_data(msgs).length > 0 ? filter_data(msgs)[0].attributes.list : []);
-    // console.log("[표시]Message.js",msgbox.filter((item) => item.attributes.name === focusroom ));
-    console.log('datas',datas);
 
-    scrollToMyRef();
-    // return () => {
-    //   setData([]);
-    // };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [msgs]);
 
 
   useEffect(() => {
 
-    socket.on('joinMsg',(data) => {
-      setOpen(true);
-      setAlertmsg(`${data.NickName}님이 ${data.Room}방에 입장하셨습니다.`);
-    })
-    socket.on('leaveMsg',(data) => {
-      setOpen(true);
-      setAlertmsg(`${data.NickName}님이 ${data.Room}방에 퇴장하셨습니다.`);
-    })
 
-    return () => {
-      socket.emit('leaveRoom',{
-        Room: focusroom,
-        NickName: me.username
-      });
-    };
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 

@@ -2,14 +2,14 @@ import React, { useEffect } from "react";
 
 /* redux */
 import { connect } from "react-redux";
-import { rx_authenticated, rx_all_users, rx_focusroom, rx_tabindex } from "../modules/chats";
+import { rx_authenticated, rx_focusroom } from "../modules/chats";
 
 /* material-ui */
 import { makeStyles } from "@material-ui/core/styles";
 import { Box, List, Button, ListSubheader } from "@material-ui/core";
 
 /* function */
-import { socket } from "../helpers/common";
+import { cm_room_remove, cm_logout } from "../helpers/common";
 
 /* components */
 import RoomItem from "./RoomItem";
@@ -53,19 +53,21 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const RoomList = ({rooms, me, btn_logout, all_users, rx_focusroom, rx_tabindex, loading3}) => {
+const RoomList = ({all_users, all_rooms, all_msgs, me, rx_authenticated, rx_focusroom, focusroom }) => {
   const classes = useStyles();
 
   const hendle_focusroom = (i) => {
-    rx_tabindex(2);
-    rx_focusroom(i);
-    console.log('방버튼')
-    socket.emit('joinRoom',{
-      Room: i,
-      NickName: me.username
-    });
+    // rx_tabindex(2);
+    // rx_focusroom(i);
+    // console.log('방버튼')
+    // socket.emit('joinRoom',{
+    //   Room: i,
+    //   NickName: me.username
+    // });
 
   }
+  const hendle_room_remove = (r_id) => cm_room_remove(r_id,all_rooms,all_msgs,rx_focusroom,focusroom);
+  
 
   useEffect(() => {
     console.log("[표시]RoomList.js");
@@ -73,20 +75,20 @@ const RoomList = ({rooms, me, btn_logout, all_users, rx_focusroom, rx_tabindex, 
   }, []);
 
   return (
-    <LoadingBar open={loading3}>
+    <LoadingBar open={false}>
       <Box className={classes.root}>
         <div  className={classes.title}>
           {me.username}
           <Button onClick={() => {
-              btn_logout();
+              cm_logout(rx_authenticated,me);
             }}>로그아웃</Button>
         </div>
         <ListSubheader component="div">전체 친구 리스트</ListSubheader>
 
         <List className={classes.list}>
-          {rooms.length > 0 ? (
-            rooms.map((room, index) => (
-              <RoomItem key={index} img="https://material-ui.com/static/images/avatar/1.jpg" room={room} all_users={all_users} event={hendle_focusroom} />
+          {all_rooms.length > 0 ? (
+            all_rooms.map((room, index) => (
+              <RoomItem key={index} img="https://material-ui.com/static/images/avatar/1.jpg" room={room} all_users={all_users} event={hendle_focusroom} hendle_room_remove={hendle_room_remove} />
             ))
           ) : (
             <li>리스트가없습니다.</li>
@@ -99,22 +101,18 @@ const RoomList = ({rooms, me, btn_logout, all_users, rx_focusroom, rx_tabindex, 
 
 const mapStateToProps = (state) => ({
   all_users: state.chats.all_users,
+  all_rooms: state.chats.all_rooms,
+  all_msgs: state.chats.all_msgs,
   me: state.chats.me,
-  loading3: state.chats.loading3
+  focusroom: state.chats.focusroom,
 });
 
 const mapDispatchToProps = (dispatch) => ({
   rx_authenticated: (val) => {
     dispatch(rx_authenticated(val));
   },
-  rx_all_users: (val) => {
-    dispatch(rx_all_users(val));
-  },
   rx_focusroom: (val) => {
     dispatch(rx_focusroom(val));
-  },
-  rx_tabindex: (val) => {
-    dispatch(rx_tabindex(val));
   },
 });
 

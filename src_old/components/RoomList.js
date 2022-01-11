@@ -2,18 +2,19 @@ import React, { useEffect } from "react";
 
 /* redux */
 import { connect } from "react-redux";
-import { rx_authenticated, rx_tabindex, rx_focusroom } from "../modules/chats";
+import { rx_authenticated, rx_all_users, rx_focusroom, rx_tabindex } from "../modules/chats";
 
 /* material-ui */
 import { makeStyles } from "@material-ui/core/styles";
 import { Box, List, Button, ListSubheader } from "@material-ui/core";
 
 /* function */
-import { cm_room_add, cm_logout } from "../helpers/common";
+import { socket } from "../helpers/common";
 
 /* components */
-import FriendItem from "./FriendItem";
+import RoomItem from "./RoomItem";
 import LoadingBar from "./LoadingBar";
+
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -52,34 +53,40 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const FrienList = ({all_users, me, all_rooms, all_msgs, rx_tabindex, rx_focusroom}) => {
+const RoomList = ({rooms, me, btn_logout, all_users, rx_focusroom, rx_tabindex, loading3}) => {
   const classes = useStyles();
-  const handleFriend = (you) => {
-    cm_room_add(me.id, you, all_rooms, all_msgs, rx_tabindex, rx_focusroom);
-  };
 
+  const hendle_focusroom = (i) => {
+    rx_tabindex(2);
+    rx_focusroom(i);
+    console.log('방버튼')
+    socket.emit('joinRoom',{
+      Room: i,
+      NickName: me.username
+    });
+
+  }
 
   useEffect(() => {
-    console.log("[표시]FrienList.js");
+    console.log("[표시]RoomList.js");
 
   }, []);
 
   return (
-    <LoadingBar open={false}>
+    <LoadingBar open={loading3}>
       <Box className={classes.root}>
         <div  className={classes.title}>
           {me.username}
           <Button onClick={() => {
-              cm_logout(rx_authenticated,me);
+              btn_logout();
             }}>로그아웃</Button>
         </div>
-
         <ListSubheader component="div">전체 친구 리스트</ListSubheader>
 
         <List className={classes.list}>
-          {all_users.length > 0 ? (
-            all_users.map((user, index) => (
-              <FriendItem key={index} img="https://material-ui.com/static/images/avatar/1.jpg" text={user.username} sub={user.email} id={user.id} confirmed={user.confirmed} event={handleFriend} />
+          {rooms.length > 0 ? (
+            rooms.map((room, index) => (
+              <RoomItem key={index} img="https://material-ui.com/static/images/avatar/1.jpg" room={room} all_users={all_users} event={hendle_focusroom} />
             ))
           ) : (
             <li>리스트가없습니다.</li>
@@ -87,27 +94,28 @@ const FrienList = ({all_users, me, all_rooms, all_msgs, rx_tabindex, rx_focusroo
         </List>
       </Box>
     </LoadingBar>
-
   );
 };
 
 const mapStateToProps = (state) => ({
   all_users: state.chats.all_users,
-  all_rooms: state.chats.all_rooms,
-  all_msgs: state.chats.all_msgs,
-  me: state.chats.me
+  me: state.chats.me,
+  loading3: state.chats.loading3
 });
 
 const mapDispatchToProps = (dispatch) => ({
   rx_authenticated: (val) => {
     dispatch(rx_authenticated(val));
   },
-  rx_tabindex: (val) => {
-    dispatch(rx_tabindex(val));
+  rx_all_users: (val) => {
+    dispatch(rx_all_users(val));
   },
   rx_focusroom: (val) => {
     dispatch(rx_focusroom(val));
   },
+  rx_tabindex: (val) => {
+    dispatch(rx_tabindex(val));
+  },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(FrienList);
+export default connect(mapStateToProps, mapDispatchToProps)(RoomList);

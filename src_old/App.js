@@ -19,6 +19,7 @@ import PrivateRoute from "./components/PrivateRoute";
 import SignUp from "./containers/SignUp";
 import Login from "./containers/Login";
 import Chatbox from "./containers/Chatbox";
+// import Gogogo from './gogogo/Gogogo';
 import LoadingBar from './components/LoadingBar';
 
 function App({rx_authenticated, authenticated, loading1, rx_me}) {
@@ -42,6 +43,11 @@ function App({rx_authenticated, authenticated, loading1, rx_me}) {
     <HashRouter>
       <LoadingBar open={loading1}>
         <Switch>
+          {/* <PublicRoute
+            path={["/", "/login"]}
+            authenticated={authenticated}
+            component={Gogogo}
+          /> */}
           <PrivateRoute
             path="/chat"
             authenticated={authenticated}

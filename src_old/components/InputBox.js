@@ -6,7 +6,7 @@ import SendIcon from "@material-ui/icons/Send";
 import { Box, Button, TextField } from "@material-ui/core";
 
 /* function */
-import { cm_setmsg } from "../helpers/common";
+// import { cm_setmsg } from "../helpers/common";
 
 const useStyles = makeStyles((theme) => ({
   InputBox: {
@@ -30,13 +30,7 @@ const useStyles = makeStyles((theme) => ({
 const InputBox = ({ all_msgs ,focusroom, me, rx_all_rooms, all_rooms,  }) => {
   const classes = useStyles();
  
-  const [msgs, setMsg] = useState({
-    Room: focusroom,
-    NickName: me.username,
-    me_id: me.id,
-    Input: '',
-    timestamp: Date.now(),
-  });
+  const [msgs, setMsg] = useState();
 
   const handleOnChange = (e) => {
     setMsg({
@@ -51,9 +45,6 @@ const InputBox = ({ all_msgs ,focusroom, me, rx_all_rooms, all_rooms,  }) => {
 
   const handleSumbit = async (e) => {
     e.preventDefault();
-    // socket.emit('SendChat',msgs);
-    cm_setmsg(msgs,all_msgs,focusroom);
-
     setMsg({ ...msgs, Input: '' });
   };
 
@@ -61,14 +52,7 @@ const InputBox = ({ all_msgs ,focusroom, me, rx_all_rooms, all_rooms,  }) => {
 
   useEffect(() => {
 
-    // socket.on('ChatResult',(data) => {      
-    //   setHello(hellos => [...hellos, data]);
-    // });
-
-    // return () => {
-    //   setHello([]);
-    // };
-      
+console.log(msgs)
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 

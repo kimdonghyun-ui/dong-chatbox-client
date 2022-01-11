@@ -1,7 +1,7 @@
-import React,{useEffect} from "react";
+import React from "react";
 
 /* redux */
-
+import { connect } from "react-redux";
 
 /* material-ui */
 import { withStyles } from "@material-ui/core/styles";
@@ -15,7 +15,7 @@ import {
 } from "@material-ui/core";
 
 /* function */
-
+import { cm_removerooms } from "../helpers/common";
 
 
 const StyledBadge = withStyles((theme) => ({
@@ -51,8 +51,8 @@ const RoomItem = ({
   room,
   avatar,
   all_users,
-  event,
-  hendle_room_remove
+  all_rooms,
+  event
 }) => {
 
 
@@ -64,13 +64,6 @@ function id_name(names) {
     all_users.filter((data) => data.id === names)[0].username
   );
 }
-
-useEffect(() => {
-  console.log("[표시]RoomItem.js");
-
-// eslint-disable-next-line react-hooks/exhaustive-deps
-}, []);
-
 
   return (
     <li style={{ display: "flex" }}>
@@ -99,7 +92,9 @@ useEffect(() => {
         } secondary="1:1대화방" />
       </ListItem>
       <Button
-        onClick={() => hendle_room_remove(room.id)}
+        onClick={() =>
+          cm_removerooms(room.id,all_rooms)
+        }
       >
         삭제
       </Button>
@@ -107,4 +102,17 @@ useEffect(() => {
   );
 };
 
-export default RoomItem;
+const mapStateToProps = (state) => ({
+  all_rooms: state.chats.all_rooms,
+});
+
+// const mapDispatchToProps = (dispatch) => ({
+//   rx_focusroom: (val) => {
+//     dispatch(rx_focusroom(val));
+//   },
+//   rx_focusmsg: (val) => {
+//     dispatch(rx_focusmsg(val));
+//   },
+// });
+
+export default connect(mapStateToProps, null)(RoomItem);

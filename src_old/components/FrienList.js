@@ -2,14 +2,14 @@ import React, { useEffect } from "react";
 
 /* redux */
 import { connect } from "react-redux";
-import { rx_authenticated, rx_tabindex, rx_focusroom } from "../modules/chats";
+import { rx_authenticated, rx_all_users, rx_all_rooms, rx_tabindex, rx_focusroom } from "../modules/chats";
 
 /* material-ui */
 import { makeStyles } from "@material-ui/core/styles";
 import { Box, List, Button, ListSubheader } from "@material-ui/core";
 
 /* function */
-import { cm_room_add, cm_logout } from "../helpers/common";
+import { cm_roomadd } from "../helpers/common";
 
 /* components */
 import FriendItem from "./FriendItem";
@@ -52,10 +52,10 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const FrienList = ({all_users, me, all_rooms, all_msgs, rx_tabindex, rx_focusroom}) => {
+const FrienList = ({users, me, btn_logout, all_rooms, rx_tabindex, rx_focusroom, loading2, msgbox}) => {
   const classes = useStyles();
   const handleFriend = (you) => {
-    cm_room_add(me.id, you, all_rooms, all_msgs, rx_tabindex, rx_focusroom);
+    cm_roomadd(me.id, you, all_rooms, rx_tabindex, rx_focusroom);
   };
 
 
@@ -65,20 +65,20 @@ const FrienList = ({all_users, me, all_rooms, all_msgs, rx_tabindex, rx_focusroo
   }, []);
 
   return (
-    <LoadingBar open={false}>
+    <LoadingBar open={loading2}>
       <Box className={classes.root}>
         <div  className={classes.title}>
           {me.username}
           <Button onClick={() => {
-              cm_logout(rx_authenticated,me);
+              btn_logout();
             }}>로그아웃</Button>
         </div>
 
         <ListSubheader component="div">전체 친구 리스트</ListSubheader>
 
         <List className={classes.list}>
-          {all_users.length > 0 ? (
-            all_users.map((user, index) => (
+          {users.length > 0 ? (
+            users.map((user, index) => (
               <FriendItem key={index} img="https://material-ui.com/static/images/avatar/1.jpg" text={user.username} sub={user.email} id={user.id} confirmed={user.confirmed} event={handleFriend} />
             ))
           ) : (
@@ -94,13 +94,20 @@ const FrienList = ({all_users, me, all_rooms, all_msgs, rx_tabindex, rx_focusroo
 const mapStateToProps = (state) => ({
   all_users: state.chats.all_users,
   all_rooms: state.chats.all_rooms,
-  all_msgs: state.chats.all_msgs,
-  me: state.chats.me
+  me: state.chats.me,
+  loading2: state.chats.loading2,
+  msgbox: state.chats.msgbox
 });
 
 const mapDispatchToProps = (dispatch) => ({
   rx_authenticated: (val) => {
     dispatch(rx_authenticated(val));
+  },
+  rx_all_users: (val) => {
+    dispatch(rx_all_users(val));
+  },
+  rx_all_rooms: (val) => {
+    dispatch(rx_all_rooms(val));
   },
   rx_tabindex: (val) => {
     dispatch(rx_tabindex(val));

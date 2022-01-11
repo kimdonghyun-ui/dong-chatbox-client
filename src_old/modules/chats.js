@@ -4,11 +4,10 @@ const RX_LOADING2 = "menu/RX_LOADING2";
 const RX_LOADING3 = "menu/RX_LOADING3";
 const RX_ALL_USERS = "menu/RX_ALL_USERS";
 const RX_ALL_ROOMS = "menu/RX_ALL_ROOMS";
-const RX_ALL_MSGS = "menu/RX_ALL_MSGS";
-
 const RX_ME = "menu/RX_ME";
 const RX_FOCUSROOM = "menu/RX_FOCUSROOM";
 const RX_TABINDEX = "menu/RX_TABINDEX";
+const RX_MSGBOX = "menu/RX_MSGBOX";
 
 
 export const rx_authenticated = (result) => ({
@@ -39,11 +38,6 @@ export const rx_all_rooms = (result) => ({
   result,
 });
 
-export const rx_all_msgs = (result) => ({
-  type: RX_ALL_MSGS,
-  result,
-});
-
 export const rx_me = (result) => ({
   type: RX_ME,
   result,
@@ -59,7 +53,10 @@ export const rx_tabindex = (result) => ({
   result,
 });
 
-
+export const rx_msgbox = (result) => ({
+  type: RX_MSGBOX,
+  result,
+});
 
 
 
@@ -70,10 +67,10 @@ export const rx_tabindex = (result) => ({
     loading3: false,
     all_users: [],
     all_rooms: [],
-    all_msgs:[],
     me:{},
     focusroom: 0,
     tabindex:0,
+    msgbox:[]
   };
 
   function chats(state = initialState, action) {
@@ -108,12 +105,6 @@ export const rx_tabindex = (result) => ({
             ...state,
             all_rooms: action.result,
         };
-        case RX_ALL_MSGS:
-          return {
-            ...state,
-            all_msgs: action.result,
-        };
-
         case RX_ME:
           return {
             ...state,
@@ -129,7 +120,12 @@ export const rx_tabindex = (result) => ({
             ...state,
             tabindex: action.result,
         };
-
+        case RX_MSGBOX:
+          return {
+            ...state,
+            msgbox: action.result,
+            // msgbox: (action.result[0].length > 0 && action.result[1] > 0) ? action.result[0].filter((item) => item.id === action.result[1])[0].attributes.msglist : [],
+        };
 
       default:
         return state;
