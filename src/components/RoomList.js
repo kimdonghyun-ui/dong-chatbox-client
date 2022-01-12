@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 
 /* redux */
 import { connect } from "react-redux";
-import { rx_authenticated, rx_focusroom } from "../modules/chats";
+import { rx_authenticated, rx_focusroom, rx_tabindex } from "../modules/chats";
 
 /* material-ui */
 import { makeStyles } from "@material-ui/core/styles";
@@ -53,20 +53,19 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const RoomList = ({all_users, all_rooms, all_msgs, me, rx_authenticated, rx_focusroom, focusroom }) => {
+const RoomList = ({all_users, all_rooms, all_msgs, me, rx_authenticated, rx_focusroom, focusroom, rx_tabindex }) => {
   const classes = useStyles();
 
   const hendle_focusroom = (i) => {
-    // rx_tabindex(2);
-    // rx_focusroom(i);
-    // console.log('방버튼')
+    rx_tabindex(2);
+    rx_focusroom(i);
+    console.log('방버튼')
     // socket.emit('joinRoom',{
     //   Room: i,
     //   NickName: me.username
     // });
-
   }
-  const hendle_room_remove = (r_id) => cm_room_remove(r_id,all_rooms,all_msgs,rx_focusroom,focusroom);
+  const hendle_room_remove = (r_id) => cm_room_remove(r_id,all_rooms,all_msgs,focusroom);
   
 
   useEffect(() => {
@@ -113,6 +112,9 @@ const mapDispatchToProps = (dispatch) => ({
   },
   rx_focusroom: (val) => {
     dispatch(rx_focusroom(val));
+  },
+  rx_tabindex: (val) => {
+    dispatch(rx_tabindex(val));
   },
 });
 

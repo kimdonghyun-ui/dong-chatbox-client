@@ -193,6 +193,74 @@ export const cm_all_msgs = async () => {
   }
 }
 //##########################################################
+//##########################################################
+//########### 메시지 업데이트(입력하고 전송 날리는거) ################
+//##########################################################
+export const cm_msgs_update = async (new_msgs,id,all_msgs) => {
+  try {
+    await axios.put(api_url+'api/msglists/'+id, {
+      "data":
+      {
+        "list":new_msgs
+      }
+    });
+
+    // console.log('cm_msgs_update 소켓에 알리기',data.data)
+    socket.emit('all_msgs', all_msgs);
+  } catch (e) {
+    console.log('cm_msgs_update 실패');
+    console.log(e);
+    console.log('cm_msgs_update 실패');
+  }
+}
+//##########################################################
+
+
+
+
+
+
+
+
+export const cm_msg_remove = async (msgs,id,all_msgs) => {
+  try {
+    await axios.put(api_url+'api/msglists/'+id, {
+      "data":
+      {
+        "list":msgs
+      }
+    });
+
+      //위에 api에는 data추가하였지만 socket에도 알려 화면단의 데이터도 최신화 해준다.
+      console.log('메시지삭제 성공',msgs);
+      socket.emit('all_msgs', all_msgs.filter((item) => item.id === id && (item.attributes.list = msgs)));
+  } catch (e) {
+    console.log('메시지삭제 실패'+e);
+  }
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -209,7 +277,7 @@ const removeMsg = async (all_msgs, m_id) => {
     console.log('메시지묶음도 추가 실패'+e);
   }
 };
-export const cm_room_remove = async (id,all_rooms,all_msgs,rx_focusroom, focusroom) => {
+export const cm_room_remove = async (id,all_rooms,all_msgs, focusroom) => {
   try {
     await axios.delete(api_url+'api/rooms/'+id);
     console.log(`api/rooms/ 룸 식제 성공 : 룸 번호 [${id}]`);
@@ -219,8 +287,8 @@ export const cm_room_remove = async (id,all_rooms,all_msgs,rx_focusroom, focusro
     socket.emit('all_rooms', r_remove);
 
     //삭제한 룸 번호가 현재 focusroom 하고 같으면 없어진 룸이기에 초기화 해준다.
-    id === focusroom && rx_focusroom(0);
-
+    id === focusroom && socket.emit('focusroom', 0);
+    // socket.emit('focusroom', id);
     //룸 삭제시 세트 메시지묶음도 삭제
     removeMsg(all_msgs, all_msgs.filter((item) => item.attributes.name === id )[0].id);
   } catch (e) {

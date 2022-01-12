@@ -2,7 +2,7 @@ import React,{ useEffect } from "react";
 
 /* redux */
 import { connect } from "react-redux";
-import { rx_all_users, rx_all_rooms, rx_all_msgs } from "../modules/chats";
+import { rx_all_users, rx_all_rooms, rx_all_msgs, rx_focusroom } from "../modules/chats";
 
 /* material-ui */
 import { CssBaseline } from "@material-ui/core";
@@ -14,12 +14,15 @@ import { socket, cm_all_users, cm_all_rooms, cm_all_msgs } from "../helpers/comm
 import TabBox from "../components/TabBox";
 import FrienList from "../components/FrienList";
 import RoomList from "../components/RoomList";
-// import Message from "../components/Message";
-// import InputBox from "../components/InputBox";
 
 
 
-function Chatbox({ rx_all_users, rx_all_rooms, rx_all_msgs }) {
+import Message from "../components/Message";
+import InputBox from "../components/InputBox";
+
+
+
+function Chatbox({ rx_all_users, rx_all_rooms, rx_all_msgs, rx_focusroom }) {
 
   useEffect(() => {
 
@@ -39,6 +42,11 @@ function Chatbox({ rx_all_users, rx_all_rooms, rx_all_msgs }) {
       rx_all_msgs(msgs);
     });
 
+    cm_all_msgs(); //api에 rooms 데이터 요청 후 성공시 소켓에 전달 (room_update로 되돌려받는다.)
+    socket.on('focusroom_update', function(focus) {
+      rx_focusroom(focus);
+    });
+
   // eslint-disable-next-line react-hooks/exhaustive-deps
   },[]);
 
@@ -50,7 +58,9 @@ function Chatbox({ rx_all_users, rx_all_rooms, rx_all_msgs }) {
           <FrienList />,
           <RoomList />,
           <>
-          탠3내용
+          까궁
+            <Message />
+            <InputBox />
           </>,
         ]}
       />
@@ -88,6 +98,9 @@ const mapDispatchToProps = (dispatch) => ({
   },
   rx_all_msgs: (val) => {
     dispatch(rx_all_msgs(val));
+  },
+  rx_focusroom: (val) => {
+    dispatch(rx_focusroom(val));
   }
 });
 
