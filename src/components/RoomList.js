@@ -9,7 +9,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { Box, List, Button, ListSubheader } from "@material-ui/core";
 
 /* function */
-import { cm_room_remove, cm_logout } from "../helpers/common";
+import { socket, cm_room_remove, cm_logout } from "../helpers/common";
 
 /* components */
 import RoomItem from "./RoomItem";
@@ -60,10 +60,10 @@ const RoomList = ({all_users, all_rooms, all_msgs, me, rx_authenticated, rx_focu
     rx_tabindex(2);
     rx_focusroom(i);
     console.log('방버튼')
-    // socket.emit('joinRoom',{
-    //   Room: i,
-    //   NickName: me.username
-    // });
+    socket.emit('joinRoom',{
+      Room: i,
+      NickName: me.username
+    });
   }
   const hendle_room_remove = (r_id) => cm_room_remove(r_id,all_rooms,all_msgs,focusroom);
   

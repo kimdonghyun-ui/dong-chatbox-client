@@ -5,7 +5,7 @@ import { connect } from "react-redux";
 import * as dateFns from "date-fns";
 import { cm_msg_remove } from "../helpers/common";
 import {ListSubheader, Snackbar} from "@material-ui/core";
-// import { socket } from "../helpers/common";
+import { socket } from "../helpers/common";
 import { cm_logout } from "../helpers/common";
 
 import {
@@ -136,12 +136,27 @@ const Message = ({ all_msgs, me, focusroom }) => {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [all_msgs,focusroom]);
-
+//포커스 삭제해보자[]여기서
 
   useEffect(() => {
 
+    socket.on('joinMsg', function(join_data) {
+      setOpen(true);
+      setAlertmsg(`${join_data.Room}방에 ${join_data.NickName}님이 입장함`);
+    });
+    socket.on('leaveMsg', function(join_data) {
+      setOpen(true);
+      setAlertmsg(`${join_data.Room}방에 ${join_data.NickName}님이 퇴장함`);
+    });
 
-
+    // Room: i,
+    // NickName: me.username
+    return () => {
+      socket.emit('leaveRoom',{
+        Room: focusroom,
+        NickName: me.username
+      });
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
