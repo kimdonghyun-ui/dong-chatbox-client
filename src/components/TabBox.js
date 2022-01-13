@@ -98,7 +98,7 @@ const TabBox = ({ content, tabindex, rx_tabindex }) => {
           <Tab icon={<PersonIcon />} label="친구" {...a11yProps(0)} />
           <Tab
             icon={
-              <Badge color="secondary" badgeContent={2}>
+              <Badge color="secondary" badgeContent={0}>
                 <ViewColumnIcon />
               </Badge>
             }

@@ -26,14 +26,14 @@ const api_url = "https://dongdong-api.herokuapp.com/";
 //##########################################################
 //########### 접속유무 확인 ################
 //##########################################################
-export const cm_contact = async (id,state) => {
+export const cm_contact = async (id,state,rx_loading2) => {
   // rx_big_loading(true);
   try {
     await axios.put(api_url+'api/users/'+id, {
       confirmed: state,
     });
     console.log('접속상태 true');
-    cm_all_users(socket);
+    cm_all_users(rx_loading2);
   } catch (e) {
     console.log('접속상태 확인 실패');
   }
@@ -87,7 +87,7 @@ export const cm_signUp = async (member,rx_authenticated,rx_loading1,rx_me) => {
 //##########################################################
 //########### 로그인 ################
 //##########################################################
-export const cm_login = async (member,rx_authenticated,rx_loading1,rx_me) => {
+export const cm_login = async (member,rx_authenticated,rx_loading1,rx_loading2,rx_me) => {
   rx_loading1(true);
     try {
       const { data } = await axios.post(api_url+'api/auth/local', {
@@ -108,7 +108,7 @@ export const cm_login = async (member,rx_authenticated,rx_loading1,rx_me) => {
         });
         rx_authenticated(true);
         rx_me(data.user);
-        cm_contact(data.user.id,true);
+        cm_contact(data.user.id,true,rx_loading2);
       }
     } catch (e) {
       console.log('실패');
@@ -121,7 +121,7 @@ export const cm_login = async (member,rx_authenticated,rx_loading1,rx_me) => {
 //##########################################################
 //########### 로그아웃 ################
 //##########################################################
-export const cm_logout = (rx_authenticated,me) => {
+export const cm_logout = (rx_authenticated,me,rx_loading2) => {
   /*쿠키에 저장한 myToken,me를 제거 */
   delCookie('myToken');
   delCookie('me');
@@ -130,7 +130,7 @@ export const cm_logout = (rx_authenticated,me) => {
   rx_authenticated(false);
 
   /* 나의 접속상태 값 false */
-  cm_contact(me.id,false);
+  cm_contact(me.id,false,rx_loading2);
 }
 //##########################################################
 
@@ -149,7 +149,8 @@ export const cm_logout = (rx_authenticated,me) => {
 //##########################################################
 //########### 유저리스트 ################
 //##########################################################
-export const cm_all_users = async () => {
+export const cm_all_users = async (rx_loading2) => {
+  rx_loading2(true);
   try {
     const { data } = await axios.get(api_url+'api/users');
     console.log('cm_all_users성공 소켓에 알리기',data)
@@ -159,6 +160,7 @@ export const cm_all_users = async () => {
     console.log(e);
     console.log('cm_all_users 실패');
   }
+  rx_loading2(false);
 }
 //##########################################################
 

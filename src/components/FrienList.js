@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 
 /* redux */
 import { connect } from "react-redux";
-import { rx_authenticated, rx_tabindex, rx_focusroom } from "../modules/chats";
+import { rx_authenticated, rx_tabindex, rx_focusroom, rx_loading2 } from "../modules/chats";
 
 /* material-ui */
 import { makeStyles } from "@material-ui/core/styles";
@@ -52,10 +52,11 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const FrienList = ({all_users, me, all_rooms, all_msgs, rx_tabindex, rx_focusroom}) => {
+const FrienList = ({all_users,rx_authenticated, me, all_rooms, all_msgs, rx_tabindex, rx_focusroom, loading2, rx_loading2}) => {
   const classes = useStyles();
   const handleFriend = (you) => {
     cm_room_add(me.id, you, all_rooms, all_msgs, rx_tabindex, rx_focusroom);
+    
   };
 
 
@@ -65,12 +66,12 @@ const FrienList = ({all_users, me, all_rooms, all_msgs, rx_tabindex, rx_focusroo
   }, []);
 
   return (
-    <LoadingBar open={false}>
+    <LoadingBar open={loading2}>
       <Box className={classes.root}>
         <div  className={classes.title}>
           {me.username}
           <Button onClick={() => {
-              cm_logout(rx_authenticated,me);
+              cm_logout(rx_authenticated,me,rx_loading2);
             }}>로그아웃</Button>
         </div>
 
@@ -95,7 +96,8 @@ const mapStateToProps = (state) => ({
   all_users: state.chats.all_users,
   all_rooms: state.chats.all_rooms,
   all_msgs: state.chats.all_msgs,
-  me: state.chats.me
+  me: state.chats.me,
+  loading2: state.chats.loading2
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -108,6 +110,9 @@ const mapDispatchToProps = (dispatch) => ({
   rx_focusroom: (val) => {
     dispatch(rx_focusroom(val));
   },
+  rx_loading2: (val) => {
+    dispatch(rx_loading2(val));
+  }
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(FrienList);

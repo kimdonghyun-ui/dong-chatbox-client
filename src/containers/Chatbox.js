@@ -2,7 +2,7 @@ import React,{ useEffect } from "react";
 
 /* redux */
 import { connect } from "react-redux";
-import { rx_all_users, rx_all_rooms, rx_all_msgs, rx_focusroom } from "../modules/chats";
+import { rx_all_users, rx_all_rooms, rx_all_msgs, rx_focusroom, rx_loading2 } from "../modules/chats";
 
 /* material-ui */
 import { CssBaseline } from "@material-ui/core";
@@ -22,11 +22,11 @@ import InputBox from "../components/InputBox";
 
 
 
-function Chatbox({ rx_all_users, rx_all_rooms, rx_all_msgs, rx_focusroom }) {
+function Chatbox({ rx_all_users, rx_all_rooms, rx_all_msgs, rx_focusroom, rx_loading2 }) {
 
   useEffect(() => {
 
-    cm_all_users(); //api에 users 데이터 요청 후 성공시 소켓에 전달 (user_update로 되돌려받는다.)
+    cm_all_users(rx_loading2); //api에 users 데이터 요청 후 성공시 소켓에 전달 (user_update로 되돌려받는다.)
     socket.on('all_user_update', function(user) {
       rx_all_users(user); //소켓에 연결된 모든 사용자에게 유저 데이터를 갱신해준다.
     });
@@ -47,6 +47,9 @@ function Chatbox({ rx_all_users, rx_all_rooms, rx_all_msgs, rx_focusroom }) {
       rx_focusroom(focus);
     });
 
+    window.addEventListener('beforeunload', function(){
+      alert('a')
+    });
   // eslint-disable-next-line react-hooks/exhaustive-deps
   },[]);
 
@@ -58,23 +61,11 @@ function Chatbox({ rx_all_users, rx_all_rooms, rx_all_msgs, rx_focusroom }) {
           <FrienList />,
           <RoomList />,
           <>
-          까궁
             <Message />
             <InputBox />
           </>,
         ]}
       />
-      {/* <TabBox
-        content={[
-          <FrienList users={all_users} me={me} btn_logout={hendle_logout} />,
-          <RoomList rooms={all_rooms} me={me} btn_logout={hendle_logout} />,
-          <>
-          까궁
-            <Message msgs={msgbox} me={me} btn_logout={hendle_logout}  />
-            <InputBox all_msgs={msgbox} me={me} focusroom={focusroom} rx_all_rooms={rx_all_rooms} all_rooms={all_rooms} />
-          </>,
-        ]}
-      /> */}
     </React.Fragment>
   );
 } 
@@ -101,7 +92,10 @@ const mapDispatchToProps = (dispatch) => ({
   },
   rx_focusroom: (val) => {
     dispatch(rx_focusroom(val));
-  }
+  },
+  rx_loading2: (val) => {
+    dispatch(rx_loading2(val));
+  },
 });
 
 export default connect(null, mapDispatchToProps)(Chatbox);

@@ -7,7 +7,7 @@ import { cm_msg_remove } from "../helpers/common";
 import {ListSubheader, Snackbar} from "@material-ui/core";
 import { socket } from "../helpers/common";
 import { cm_logout } from "../helpers/common";
-
+import { rx_authenticated, rx_loading2 } from "../modules/chats";
 import {
   Box,
   List,
@@ -86,7 +86,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const Message = ({ all_msgs, me, focusroom }) => {
+const Message = ({ all_msgs, me, focusroom, rx_authenticated, rx_loading2 }) => {
   const [open, setOpen] = useState(false);
   const [alertmsg, setAlertmsg] = useState('');
   const handleClose = (event, reason) => {
@@ -97,7 +97,7 @@ const Message = ({ all_msgs, me, focusroom }) => {
 
 
 
-  const [datas, setData] = useState([]);
+  // const [datas, setData] = useState([]);
 
   const classes = useStyles();
 
@@ -133,7 +133,11 @@ const Message = ({ all_msgs, me, focusroom }) => {
     }else{
       setList([]);
     }
+    scrollToMyRef();
 
+    return () => {
+      setList([]);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [all_msgs,focusroom]);
 //포커스 삭제해보자[]여기서
@@ -152,6 +156,7 @@ const Message = ({ all_msgs, me, focusroom }) => {
     // Room: i,
     // NickName: me.username
     return () => {
+      setOpen(false);
       socket.emit('leaveRoom',{
         Room: focusroom,
         NickName: me.username
@@ -167,9 +172,9 @@ const Message = ({ all_msgs, me, focusroom }) => {
       className={classes.root}
     >
       <div className={classes.title}>
-        {me && me.username} 
+        {me && me.username} {focusroom > 0 && (<div style={{ fontSize:'12px' }}>(방번호 {focusroom})</div>)}
         <Button onClick={() => {
-            cm_logout();
+            cm_logout(rx_authenticated,me,rx_loading2);
           }}>로그아웃</Button>
       </div>
       <ListSubheader
@@ -267,10 +272,13 @@ const mapStateToProps = (state) => ({
   me: state.chats.me
 });
 
-// const mapDispatchToProps = (dispatch) => ({
-//   rx_remove: (val) => {
-//     dispatch(rx_remove(val));
-//   },
-// });
+const mapDispatchToProps = (dispatch) => ({
+  rx_authenticated: (val) => {
+    dispatch(rx_authenticated(val));
+  },
+  rx_loading2: (val) => {
+    dispatch(rx_loading2(val));
+  },
+});
 
-export default connect(mapStateToProps, null)(Message);
+export default connect(mapStateToProps, mapDispatchToProps)(Message);
