@@ -86,7 +86,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const Message = ({ all_msgs, me, focusroom, rx_authenticated, rx_loading2 }) => {
+const Message = ({ all_msgs, me, focusroom, rx_authenticated, rx_loading2, tabindex }) => {
   const [open, setOpen] = useState(false);
   const [alertmsg, setAlertmsg] = useState('');
   const handleClose = (event, reason) => {
@@ -104,6 +104,7 @@ const Message = ({ all_msgs, me, focusroom, rx_authenticated, rx_loading2 }) => 
   const intervalId = useRef(null);
 
   function scrollToMyRef() {
+    console.log('scrollToMyRef실행')
     const scroll =
       intervalId.current.scrollHeight - intervalId.current.clientHeight;
     intervalId.current.scrollTo(0, scroll);
@@ -153,8 +154,7 @@ const Message = ({ all_msgs, me, focusroom, rx_authenticated, rx_loading2 }) => 
       setAlertmsg(`${join_data.Room}방에 ${join_data.NickName}님이 퇴장함`);
     });
 
-    // Room: i,
-    // NickName: me.username
+
     return () => {
       setOpen(false);
       socket.emit('leaveRoom',{
@@ -164,8 +164,11 @@ const Message = ({ all_msgs, me, focusroom, rx_authenticated, rx_loading2 }) => 
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
-
-
+    useEffect(() => {
+      setTimeout(() => {
+        scrollToMyRef();
+      }, 500);
+    }, [tabindex]);
 
   return (
     <Box
@@ -269,7 +272,8 @@ const Message = ({ all_msgs, me, focusroom, rx_authenticated, rx_loading2 }) => 
 const mapStateToProps = (state) => ({
   focusroom: state.chats.focusroom,
   all_msgs: state.chats.all_msgs,
-  me: state.chats.me
+  me: state.chats.me,
+  tabindex: state.chats.tabindex
 });
 
 const mapDispatchToProps = (dispatch) => ({

@@ -49,9 +49,6 @@ const InputBox = ({ all_msgs ,focusroom, me, rx_all_rooms, all_rooms,  }) => {
       timestamp: Date.now(),
       uid:uuidv4()
     });
-
-
-
   };
 
 
@@ -62,34 +59,22 @@ const InputBox = ({ all_msgs ,focusroom, me, rx_all_rooms, all_rooms,  }) => {
     });
   }
 
-
   const handleSumbit = async (e) => {
     e.preventDefault();
 
     const m_focus_list = all_msgs.filter((item) => item.attributes.name === focusroom)[0];
     if(m_focus_list){
-      console.log('메시지가 있으니까 셋팅해주기',m_focus_list);
-      m_focus_list.attributes.list.push(msgs)
-      console.log(m_focus_list.attributes.list)
+      m_focus_list.attributes.list.push(msgs);
       cm_msgs_update(m_focus_list.attributes.list,m_focus_list.id,all_msgs);
-      // console.log('all_msgsall_msgsall_msgsall_msgsall_msgsall_msgs',all_msgs)
     };
 
-    // 
     setMsg({ ...msgs, Input: '' });
   };
 
-  // const [hellos, setHello] = useState([]);
 
   useEffect(() => {
     console.log('[표시]InputBox.js');
-
-console.log(uuidv4())
-
-// console.log('msgs',msgs)
-// console.log('all_msgs',all_msgs)
-
-
+    
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
@@ -116,16 +101,15 @@ console.log(uuidv4())
           color="primary"
           type="submit"
           className={classes.button}
-          endIcon={<SendIcon />}
+          // endIcon={<SendIcon />}
           onClick={handleSumbit}
-        >
-          Send
-        </Button>
+          disabled={msgs.Input === "" ? true : false}
+        ><SendIcon /></Button>
       </Box>
     </form>
   );
 };
-
+// 
 const mapStateToProps = (state) => ({
   focusroom: state.chats.focusroom,
   all_msgs: state.chats.all_msgs,

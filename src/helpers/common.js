@@ -7,8 +7,8 @@ import io from "socket.io-client";
 
 
 
-// export const socket = io.connect("http://localhost:4001");
-export const socket = io.connect("https://dong-chatbox-server.herokuapp.com");
+export const socket = io.connect("http://localhost:4001");
+// export const socket = io.connect("https://dong-chatbox-server.herokuapp.com");
 
 // const api_url = "http://localhost:1337/";
 const api_url = "https://dongdong-api.herokuapp.com/";
@@ -78,7 +78,8 @@ export const cm_signUp = async (member,rx_authenticated,rx_loading1,rx_me) => {
         rx_me(data.user);
       }
     } catch (e) {
-      console.log('회원가입 실패');
+      console.log('회원가입 실패',e);
+      alert('회원가입에 실패하였습니다. 기존가입내역이있는듯합니다. 다른아이디로갑하세요')
     }
     rx_loading1(false);
   }

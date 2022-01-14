@@ -47,9 +47,9 @@ function Chatbox({ rx_all_users, rx_all_rooms, rx_all_msgs, rx_focusroom, rx_loa
       rx_focusroom(focus);
     });
 
-    window.addEventListener('beforeunload', function(){
-      alert('a')
-    });
+    // window.addEventListener('beforeunload', function(){
+    //   alert('a')
+    // });
   // eslint-disable-next-line react-hooks/exhaustive-deps
   },[]);
 
